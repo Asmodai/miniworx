@@ -1,6 +1,8 @@
 MiniworX
 ========
 
+A mini framework.
+
 1. Requirements
 ---------------
 * PHP 7.0.0
