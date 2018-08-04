@@ -37,6 +37,10 @@
 
 namespace miniworx\Utils;
 
+define('TYPE_INTEGER', 1);
+define('TYPE_FLOAT',   2);
+define('TYPE_BOOLEAN', 3);
+
 /**
  * Various type-based utilities and hacks.
  *
@@ -49,15 +53,6 @@ namespace miniworx\Utils;
  */
 class Types
 {
-    /** Data type is integer. */
-    public const TYPE_INTEGER = 1;
-
-    /** Data type is float. */
-    public const TYPE_FLOAT = 2;
-
-    /** Data type is boolean. */
-    public const TYPE_BOOLEAN = 3;
-
     /**
      * Convert a given value to a numeric value in a safer manner than
      * `intval'.
@@ -72,19 +67,19 @@ class Types
      * @throw \UnexpectedValueException Thrown when there was an issue
      *        coercing the value to a booelan value.
      */
-    public static function toNumber(&$value, $type = self::TYPE_INTEGER)
+    public static function toNumber(&$value, $type = TYPE_INTEGER)
     {
         $flags  = [];
         $filter = FILTER_DEFAULT;
 
         switch ($type) {
-            case self::TYPE_INTEGER:
+            case TYPE_INTEGER:
                 $filter = FILTER_VALIDATE_INT;
                 break;
-            case self::TYPE_FLOAT:
+            case TYPE_FLOAT:
                 $filter = FILTER_VALIDATE_FLOAT;
                 break;
-            case self::TYPE_BOOLEAN:
+            case TYPE_BOOLEAN:
                 $flags[] = FILTER_NULL_ON_FAILURE;
                 $filter  = FILTER_VALIDATE_BOOLEAN;
                 break;

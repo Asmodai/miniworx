@@ -74,7 +74,7 @@ class LTConstraint extends \miniworx\Route\Constraint
     {
         $this->criteria = \miniworx\Utils\Types::toNumber(
             $text,
-            \miniworx\Utils\Types::TYPE_INTEGER
+            TYPE_INTEGER
         );
     }
 }
