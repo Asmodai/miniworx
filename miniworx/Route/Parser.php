@@ -9,8 +9,8 @@
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Created:    04 Aug 2018 04:37:12
  *
@@ -44,8 +44,8 @@ namespace miniworx\Route;
  * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  */
 class Parser
 {
@@ -63,8 +63,9 @@ class Parser
     {
         $process = explode('=', $text);
 
-        if (count($process) <= 1) {
-            throw new \Exception("Invalid constraint '${text}'.");
+        // For constraints that take no arguments.
+        if (!isset($process[1])) {
+            $process[1] = "";
         }
 
         return ConstraintFactory::makeConstraint($process[0], $process[1]);

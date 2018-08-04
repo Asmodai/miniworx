@@ -9,8 +9,8 @@
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Created:    04 Aug 2018 05:00:52
  *
@@ -44,8 +44,8 @@ namespace miniworx\Route;
  * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  */
 abstract class Constraint
 {
@@ -64,15 +64,21 @@ abstract class Constraint
     abstract public function validate($value);
 
     /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     */
+    abstract protected function parse(string $text);
+
+    /**
      * Constructor method.
      *
-     * @param string $type     The constraint type.
-     * @param mixed  $criteria The critera for the constraint.
+     * @param string $criteria The critera for the constraint.
      */
-    public function __construct(string $type, mixed $criteria)
+    public function __construct(string $criteria)
     {
-        $this->type     = $type;
-        $this->criteria = $criteria;
+        $this->parse($criteria);
     }
 
     /**

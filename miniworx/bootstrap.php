@@ -9,8 +9,8 @@
  * @author Vivien Richter <vivien-richter@outlook.de>
  * @copyright 2018 Vivien Richter <vivien-richter@outlook.de>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation

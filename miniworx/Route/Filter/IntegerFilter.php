@@ -9,8 +9,8 @@
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Created:    04 Aug 2018 04:58:48
  *
@@ -44,8 +44,8 @@ namespace miniworx\Route\Filter;
  * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  */
 class IntegerFilter extends \miniworx\Route\Filter
 {

@@ -9,8 +9,8 @@
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Created:    04 Aug 2018 04:14:15
  *
@@ -44,8 +44,8 @@ namespace miniworx\Route;
  * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  */
 class Route
 {
@@ -145,7 +145,6 @@ class Route
     {
         if (!$value) {
             // TODO: Should empty values be handled in a special way?
-            echo "Invalid value" . PHP_EOL;
             return false;
         }
 
@@ -167,6 +166,36 @@ class Route
     }
 
     /**
+     * Apply a constraint for the binding a the given key to the given
+     * value;
+     *
+     * @param mixed  $value The value to which we apply the constraint.
+     * @param string $key   The key for the binding containing the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
+     */
+    private function applyConstraint(&$value, string &$key)
+    {
+        if (!$value) {
+            // TODO: Should empty values be handled in a special way?
+            return false;
+        }
+
+        if (!isset($this->bindings[$key])) {
+            return false;
+        }
+
+        if (!isset($this->bindings[$key]['constraint'])) {
+            /*
+             * Similarly to the filter application, a lack of a constraint
+             * for a binding requires us to return `true'.
+             */
+            return true;
+        }
+
+        return $this->bindings[$key]['constraint']->validate($value);
+    }
+
+    /**
      * Compute any bindings for this match.
      *
      * A binding is an associated array where the key is the name of the
@@ -185,7 +214,14 @@ class Route
                 $value = $groups[':' . $key];
 
                 if (!$this->applyFilter($value, $key)) {
+                    // TODO: Exception
                     echo "FILTER FAILED!";
+                    return false;
+                }
+
+                if (!$this->applyConstraint($value, $key)) {
+                    // TODO: Exception
+                    echo "CONSTRAINT FAILED!";
                     return false;
                 }
 

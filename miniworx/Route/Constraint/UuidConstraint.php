@@ -2,7 +2,7 @@
 /**
  * PHP version 7
  *
- * Filter factory class.
+ * UUID constraint.
  *
  * @category Classes
  * @package Classes
@@ -12,7 +12,7 @@
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  *
- * Created:    04 Aug 2018 04:56:05
+ * Created:    04 Aug 2018 19:49:38
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,10 +35,10 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+namespace miniworx\Route\Constraint;
 
 /**
- * Filter factory class.
+ * UUID constraint.
  *
  * @category Classes
  * @package Classes
@@ -47,29 +47,37 @@ namespace miniworx\Route;
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  */
-class FilterFactory
+class UuidConstraint extends \miniworx\Route\Constraint
 {
-    /**
-     * Filter factory method.
-     *
-     * @param string $type The filter type.
-     * @return Filter A newly-created filter instance.
-     *
-     * @throw InvalidFilterException Thrown when the type of filter requested
-     *        is invalid.
-     */
-    public static function makeFilter(string $type)
-    {
-        switch (strtolower($type)) {
-            case 'integer':
-                return new Filter\IntegerFilter($type);
+    protected $type = 'uuid';
 
-            default:
-                throw new InvalidFilterException(
-                    "Invalid filter type '${type}'."
-                );
-        }
+    /**
+     * Constraint validation function.
+     *
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
+     */
+    public function validate($value)
+    {
+        return preg_match(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/S',
+            $value
+        );
+    }
+
+    /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
+     * @SuppressWarnings(UnusedFormalParameter)
+     */
+    protected function parse(/* unused */ string $text)
+    {
+        /* no-operation. */
     }
 }
 
-/* FilterFactory.php ends here. */
+/* UuidConstraint.php ends here. */

@@ -9,8 +9,8 @@
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  *
  * Created:    04 Aug 2018 05:04:38
  *
@@ -44,8 +44,8 @@ namespace miniworx\Route;
  * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT MIT
- * @link https://www.github.com/...
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://github.com/vivi90/miniworx
  */
 class ConstraintFactory
 {
@@ -58,10 +58,18 @@ class ConstraintFactory
      */
     public static function makeConstraint(string $type, $criteria)
     {
-        echo "Constraint type     = ${type}". PHP_EOL;
-        echo "Constraint criteria = ${criteria}" . PHP_EOL;
+        $prefix = '\\miniworx\\Route\\Constraint\\';
+        $class  = $prefix . ucfirst(strtolower($type)) . 'Constraint';
 
-        // TODO: Rest of the code :)
+        echo "Looking up ${class}" . PHP_EOL;
+
+        if (class_exists($class, true)) {
+            return new $class($criteria);
+        }
+
+        throw new InvalidConstraintException(
+            "Invalid constraint type '${type}'"
+        );
     }
 }
 

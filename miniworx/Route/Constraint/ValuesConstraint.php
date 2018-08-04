@@ -2,7 +2,7 @@
 /**
  * PHP version 7
  *
- * Filter factory class.
+ * Values constraint.
  *
  * @category Classes
  * @package Classes
@@ -12,7 +12,7 @@
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  *
- * Created:    04 Aug 2018 04:56:05
+ * Created:    04 Aug 2018 18:02:44
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,10 +35,13 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+namespace miniworx\Route\Constraint;
 
 /**
- * Filter factory class.
+ * Values Constraint.
+ *
+ * The constraint shall be met when the value is a member of the set of
+ * allowed values that comprise the criteria.
  *
  * @category Classes
  * @package Classes
@@ -47,29 +50,42 @@ namespace miniworx\Route;
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  */
-class FilterFactory
+class ValuesConstraint extends \miniworx\Route\Constraint
 {
-    /**
-     * Filter factory method.
-     *
-     * @param string $type The filter type.
-     * @return Filter A newly-created filter instance.
-     *
-     * @throw InvalidFilterException Thrown when the type of filter requested
-     *        is invalid.
-     */
-    public static function makeFilter(string $type)
-    {
-        switch (strtolower($type)) {
-            case 'integer':
-                return new Filter\IntegerFilter($type);
+    protected $type = 'values';
 
-            default:
-                throw new InvalidFilterException(
-                    "Invalid filter type '${type}'."
-                );
+    /**
+     * Constraint validation function.
+     *
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
+     */
+    public function validate($value)
+    {
+        return in_array($value, $this->criteria);
+    }
+
+    /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
+     */
+    protected function parse(string $text)
+    {
+        if (substr($text, 1, 1)     !== '['
+            && substr($text, -1, 1) !== ']'
+        ) {
+            throw new \InvalidArgumentException(
+                "'${text}' is not a valid 'values' argument. A 'values' list " .
+                "should be delimited with '[' and ']', e.g. '[1, 2, 3]'."
+            );
         }
+
+        $this->criteria = json_decode($text);
     }
 }
 
-/* FilterFactory.php ends here. */
+/* ValuesConstraint.php ends here. */
