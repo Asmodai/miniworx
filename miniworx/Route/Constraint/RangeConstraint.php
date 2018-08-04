@@ -57,7 +57,7 @@ class RangeConstraint extends \miniworx\Route\Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         return ($value >= $this->criteria[0]
                 && $value <= $this->criteria[1]);
@@ -81,7 +81,9 @@ class RangeConstraint extends \miniworx\Route\Constraint
                 $inclusive = true;
                 /* Fallthrough. */
             case '[':
-                $number = \miniworx\Utils\Types::toNumber(substr($text, 1));
+                $value  = substr($text, 1);
+                $number = \miniworx\Utils\Types::toNumber($value);
+                                                          
                 break;
             default:
                 throw new \InvalidArgumentException(
@@ -113,7 +115,8 @@ class RangeConstraint extends \miniworx\Route\Constraint
                 $inclusive = true;
                 /* Fallthrough. */
             case ']':
-                $number = \miniworx\Utils\Types::toNumber(substr($text, 0, -1));
+                $value  = substr($text, 0, -1);
+                $number = \miniworx\Utils\Types::toNumber($value);
                 break;
             default:
                 throw new \InvalidArgumentException(
@@ -136,7 +139,7 @@ class RangeConstraint extends \miniworx\Route\Constraint
      * @SuppressWarnings(StaticAccess)
      * @SuppressWarnings(GotoStatement) - Reread Dijkstra's paper, damn you.
      */
-    protected function parse(string $text)
+    protected function parse(string &$text)
     {
         $range = explode('..', $text);
         if (count($range) !== 2) {

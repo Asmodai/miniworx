@@ -59,7 +59,7 @@ class Parser
      *
      * @SuppressWarnings(StaticAccess)
      */
-    private static function parseConstraint($text)
+    private static function parseConstraint(&$text)
     {
         $process = explode('=', $text);
 
@@ -80,9 +80,9 @@ class Parser
      *
      * @SuppressWarnings(StaticAccess)
      */
-    private static function parseFilter($text)
+    private static function parseFilter(&$text)
     {
-        if (!$text || strlen($text) === 0) {
+        if (!$text || isset($text[0])) {
             return null;
         }
 
@@ -99,7 +99,7 @@ class Parser
      * @SuppressWarnings(StaticAccess)
      * @SuppressWarnings(GotoStatement) -- I KNOW WHAT I AM DOING.
      */
-    public static function parse($text)
+    public static function parse(&$text)
     {
         if (substr($text, 1, 1)     !== '{'
             && substr($text, -1, 1) !== '}'
@@ -118,7 +118,7 @@ class Parser
         $filter     = null;
 
         /* Save effort if there's no constraint or filter. */
-        if (count($parts) === 1) {
+        if (!isset($parts[1])) {
             goto end;
         }
 
@@ -127,12 +127,8 @@ class Parser
         }
 
         if (isset($parts[2])) {
-            $constraint = self::parseConstraint(
-                implode(
-                    ',',
-                    array_slice($parts, 2)
-                )
-            );
+            $joined     = implode(',', array_slice($parts, 2));
+            $constraint = self::parseConstraint($joined);
         }
 
         end:

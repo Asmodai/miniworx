@@ -58,17 +58,18 @@ class FilterFactory
      * @throw InvalidFilterException Thrown when the type of filter requested
      *        is invalid.
      */
-    public static function makeFilter(string $type)
+    public static function makeFilter(string &$type)
     {
-        switch (strtolower($type)) {
-            case 'integer':
-                return new Filter\IntegerFilter($type);
+        $prefix = '\\miniworx\\Route\\Filter\\';
+        $class  = $prefix . ucfirst(strtolower($type)) . 'Filter';
 
-            default:
-                throw new InvalidFilterException(
-                    "Invalid filter type '${type}'."
-                );
+        if (class_exists($class, true)) {
+            return new $class($type);
         }
+
+        throw new InvalidFilterException(
+            "Invalid filter type '${type}'."
+        );
     }
 }
 

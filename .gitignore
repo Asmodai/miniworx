@@ -4,6 +4,10 @@
 *.lck
 *~
 
+# Profiling noise
+cachegrind.*
+callgrind.*
+
 # macOS noise
 .DS_Store
 

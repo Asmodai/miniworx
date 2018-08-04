@@ -57,7 +57,7 @@ class UuidConstraint extends \miniworx\Route\Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         return preg_match(
             '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/S',
@@ -74,7 +74,7 @@ class UuidConstraint extends \miniworx\Route\Constraint
      * @SuppressWarnings(StaticAccess)
      * @SuppressWarnings(UnusedFormalParameter)
      */
-    protected function parse(/* unused */ string $text)
+    protected function parse(/* unused */ string &$text)
     {
         /* no-operation. */
     }

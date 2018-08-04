@@ -57,7 +57,7 @@ class GTEConstraint extends \miniworx\Route\Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         return ($value >= $this->criteria);
     }
@@ -70,7 +70,7 @@ class GTEConstraint extends \miniworx\Route\Constraint
      *
      * @SuppressWarnings(StaticAccess)
      */
-    protected function parse(string $text)
+    protected function parse(string &$text)
     {
         $this->criteria = \miniworx\Utils\Types::toNumber(
             $text,

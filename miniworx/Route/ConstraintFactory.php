@@ -56,12 +56,10 @@ class ConstraintFactory
      * @param mixed  $criteria The constraint criteria.
      * @return Constraint A newly-created constraint instance.
      */
-    public static function makeConstraint(string $type, $criteria)
+    public static function makeConstraint(string &$type, &$criteria)
     {
         $prefix = '\\miniworx\\Route\\Constraint\\';
         $class  = $prefix . ucfirst(strtolower($type)) . 'Constraint';
-
-        echo "Looking up ${class}" . PHP_EOL;
 
         if (class_exists($class, true)) {
             return new $class($criteria);

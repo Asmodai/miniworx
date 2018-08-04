@@ -61,7 +61,7 @@ abstract class Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    abstract public function validate($value);
+    abstract public function validate(&$value);
 
     /**
      * Configure a constraint.
@@ -69,14 +69,14 @@ abstract class Constraint
      * @param string $text The configuration.
      * @return void Empty.
      */
-    abstract protected function parse(string $text);
+    abstract protected function parse(string &$text);
 
     /**
      * Constructor method.
      *
      * @param string $criteria The critera for the constraint.
      */
-    public function __construct(string $criteria)
+    public function __construct(string &$criteria)
     {
         $this->parse($criteria);
     }

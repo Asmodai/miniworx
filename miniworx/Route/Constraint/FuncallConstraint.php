@@ -57,7 +57,7 @@ class FuncallConstraint extends \miniworx\Route\Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         if (!isset($this->criteria)) {
             return false;
@@ -74,7 +74,7 @@ class FuncallConstraint extends \miniworx\Route\Constraint
      *
      * @SuppressWarnings(StaticAccess)
      */
-    protected function parse(string $text)
+    protected function parse(string &$text)
     {
         $callable = null;
 

@@ -55,7 +55,7 @@ class IntegerFilter extends \miniworx\Route\Filter
      * @param mixed $value Value to validate against the filter.
      * @return boolean True if filter validated; otherwise false.
      */
-    public function validate($value)
+    public function validate(&$value)
     {
         return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }

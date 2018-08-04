@@ -58,14 +58,14 @@ abstract class Filter
      * @param mixed $value Value to validate against the filter.
      * @return boolean True if filter validated; otherwise false.
      */
-    abstract public function validate($value);
+    abstract public function validate(&$value);
 
     /**
      * Constructor method.
      *
      * @param string $type The type of the filter.
      */
-    public function __construct(string $type)
+    public function __construct(string &$type)
     {
         $this->type = $type;
     }

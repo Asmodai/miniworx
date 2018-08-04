@@ -72,7 +72,7 @@ class Types
      * @throw \UnexpectedValueException Thrown when there was an issue
      *        coercing the value to a booelan value.
      */
-    public static function toNumber($value, $type = self::TYPE_INTEGER)
+    public static function toNumber(&$value, $type = self::TYPE_INTEGER)
     {
         $flags  = [];
         $filter = FILTER_DEFAULT;

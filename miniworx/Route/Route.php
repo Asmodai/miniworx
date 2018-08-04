@@ -107,7 +107,7 @@ class Route
      * @return mixed|false A list of bindings for the match if successful;
      *                     otherwise false is returned.
      */
-    public function match(string $against)
+    public function match(string &$against)
     {
         $elements = explode('/', $against);
         if (count($elements) != $this->matchesLen) {
@@ -205,9 +205,9 @@ class Route
      * @return array An array of bindings.
      * @private
      */
-    private function bindings(array $groups)
+    private function bindings(array &$groups)
     {
-        if (count($groups) > 0) {
+        if (isset($groups)) {
             $result = array();
 
             foreach (array_keys($this->bindings) as $key) {
@@ -240,7 +240,7 @@ class Route
      * @return boolean True if there is a match; otherwise false is returned.
      * @private
      */
-    private function fragmentMatch(string $what, string $with)
+    private function fragmentMatch(string &$what, string &$with)
     {
         if (substr($with, 0, 1) === ':') {
             return true;
