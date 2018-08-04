@@ -6,8 +6,8 @@
  *
  * @category Classes
  * @package Classes
- * @author Paul Ward <pward@alertlogic.com>
- * @copyright 2018 Paul Ward <pward@alertlogic.com>
+ * @author Paul Ward <asmodai@gmail.com>
+ * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT MIT
  * @link https://www.github.com/...
@@ -42,8 +42,8 @@ namespace miniworx\Route;
  *
  * @category Classes
  * @package Classes
- * @author Paul Ward <pward@alertlogic.com>
- * @copyright 2018 Paul Ward <pward@alertlogic.com>
+ * @author Paul Ward <asmodai@gmail.com>
+ * @copyright 2018 Paul Ward <asmodai@gmail.com>
  * @license https://opensource.org/licenses/MIT MIT
  * @link https://www.github.com/...
  */
