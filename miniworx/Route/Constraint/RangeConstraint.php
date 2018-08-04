@@ -139,11 +139,11 @@ class RangeConstraint extends \miniworx\Route\Constraint
     protected function parse(string $text)
     {
         $range = explode('..', $text);
-        if (count($range) < 2) {
+        if (count($range) !== 2) {
             throw new \InvalidArgumentException(
                 "'${text}' is not a valid 'range' argument.  A 'range' " .
                 "should have its start and end points delimited by '..', " .
-                "e.g. '[1.100]'."
+                "e.g. '[1..100]'."
             );
         }
 
