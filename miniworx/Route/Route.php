@@ -90,7 +90,7 @@ class Route
                     continue;
                 }
 
-                $this->bindings[$name] = null;
+                $this->bindings[$name] = $name;
             }
 
             $this->matches[] = $fragment;
@@ -145,6 +145,7 @@ class Route
     {
         if (!$value) {
             // TODO: Should empty values be handled in a special way?
+            echo "Invalid value" . PHP_EOL;
             return false;
         }
 
@@ -153,7 +154,13 @@ class Route
         }
 
         if (!isset($this->bindings[$key]['filter'])) {
-            return false;
+            /*
+             * If there is no filter, then simply return `true'.
+             *
+             * Returning `false' here can break variable bindings that do
+             * not have a filter.
+             */
+            return true;
         }
 
         return $this->bindings[$key]['filter']->validate($value);
@@ -177,7 +184,7 @@ class Route
             foreach (array_keys($this->bindings) as $key) {
                 $value = $groups[':' . $key];
 
-                if ($this->applyFilter($value, $key)) {
+                if (!$this->applyFilter($value, $key)) {
                     echo "FILTER FAILED!";
                     return false;
                 }
