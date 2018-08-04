@@ -1,1 +1,14 @@
+# Editor noise
+\#*
+*.swp
+*.lck
+*~
+
+# macOS noise
+.DS_Store
+
+# Generated documentation
+/doc/
+
+# SQL
 database.sql
