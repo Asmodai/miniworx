@@ -8,7 +8,7 @@
 .DS_Store
 
 # Generated documentation
-/doc/
+/docs/
 
 # SQL
 database.sql

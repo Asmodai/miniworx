@@ -135,6 +135,31 @@ class Route
     }
 
     /**
+     * Apply a filter for the binding at the given key to the given value.
+     *
+     * @param mixed  $value The value to which we apply the filter.
+     * @param string $key   The key for the binding containing the filter.
+     * @return boolean True if the filter is validated; otherwise false.
+     */
+    private function applyFilter(&$value, string &$key)
+    {
+        if (!$value) {
+            // TODO: Should empty values be handled in a special way?
+            return false;
+        }
+
+        if (!isset($this->bindings[$key])) {
+            return false;
+        }
+
+        if (!isset($this->bindings[$key]['filter'])) {
+            return false;
+        }
+
+        return $this->bindings[$key]['filter']->validate($value);
+    }
+
+    /**
      * Compute any bindings for this match.
      *
      * A binding is an associated array where the key is the name of the
@@ -152,15 +177,12 @@ class Route
             foreach (array_keys($this->bindings) as $key) {
                 $value = $groups[':' . $key];
 
-                if ($this->bindings[$key] !== null) {
-                    if (! $this->bindings[$key]['filter']->validate($value)) {
-                        // TODO: Exception here!
-                        echo "FILTER FAILED!";
-                        return false;
-                    }
+                if ($this->applyFilter($value, $key)) {
+                    echo "FILTER FAILED!";
+                    return false;
                 }
 
-                $result[$key] = $groups[':' . $key];
+                $result[$key] = $value;
             }
 
             return $result;

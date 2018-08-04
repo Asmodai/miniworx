@@ -53,47 +53,39 @@ class Parser
      * Parse the given text for a constraint.
      *
      * @param string $text The text to parse.
-     * @return miniworx\Route\Constraint A newly-created constraint.
-     * @throws miniworx\Route\InvalidConstraintException should the parsed
-     *         exception be invalid.
+     * @return Constraint A newly-created constraint.
+     * @throws InvalidConstraintException should the parsed exception be
+     *         invalid.
      *
      * @SuppressWarnings(StaticAccess)
      */
     private static function parseConstraint($text)
     {
-        $second  = strpos($text, ',', strpos($text, ',') + 1);
-        $process = explode('=', substr($text, $second + 1, -1));
+        $process = explode('=', $text);
 
         if (count($process) <= 1) {
             throw new \Exception("Invalid constraint '${text}'.");
         }
 
-        return ConstraintFactory::makeConstraint(
-            $process[0],
-            $process[1]
-        );
+        return ConstraintFactory::makeConstraint($process[0], $process[1]);
     }
 
     /**
      * Parse the given text for a filter.
      *
      * @param string $text The text to parse.
-     * @return miniworx\Route\Filter A newly-created filter.
+     * @return Filter|null A newly-created filter; or null if no filter type
+     *         is present.
      *
      * @SuppressWarnings(StaticAccess)
      */
     private static function parseFilter($text)
     {
-        $first  = strpos($text, ',');
-        $second = strpos($text, ',', $first + 1);
+        if (!$text || strlen($text) === 0) {
+            return null;
+        }
 
-        return FilterFactory::makeFilter(
-            substr(
-                $text,
-                $first + 1,
-                $second ? abs($first - $second) - 1 : -1
-            )
-        );
+        return FilterFactory::makeFilter($text);
     }
 
     /**
@@ -104,6 +96,7 @@ class Parser
      *               if any were parsed from the text.
      *
      * @SuppressWarnings(StaticAccess)
+     * @SuppressWarnings(GotoStatement) -- I KNOW WHAT I AM DOING.
      */
     public static function parse($text)
     {
@@ -114,26 +107,34 @@ class Parser
         }
 
         $commas = substr_count($text, ',');
-        if ($commas == 0 || $commas > 2) {
+        if ($commas == 0) {
             return false;
         }
 
-        $variable   = substr($text, 1, strpos($text, ',') - 1);
+        $parts      = explode(',', substr($text, 1, -1));
+        $variable   = $parts[0];
         $constraint = null;
         $filter     = null;
 
-        // Pay attention to the lack of `break'!
-        // Also, PHP indentation totally sucks.
-        switch ($commas) {
-            case 2:
-                $constraint = self::parseConstraint($text);
-                /* Fallthrough */
-
-            case 1:
-                $filter = self::parseFilter($text);
-                break;
+        /* Save effort if there's no constraint or filter. */
+        if (count($parts) === 1) {
+            goto end;
         }
 
+        if (isset($parts[1])) {
+            $filter = self::parseFilter($parts[1]);
+        }
+
+        if (isset($parts[2])) {
+            $constraint = self::parseConstraint(
+                implode(
+                    ',',
+                    array_slice($parts, 2)
+                )
+            );
+        }
+
+        end:
         return array(
             'variable'   => $variable,
             'constraint' => $constraint,
