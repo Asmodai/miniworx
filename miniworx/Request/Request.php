@@ -115,7 +115,6 @@ class Request
         $this->explodeUri();
 
         // Sanitize the URI now.
-        echo "Hmm, URL at: " . $this->uri . PHP_EOL;
         $this->uri = \miniworx\Utils\Sanitation::sanitizeUrl($this->uri);
     }
 
@@ -164,6 +163,8 @@ class Request
      * parameters.
      *
      * @return void Side effects, baby!
+     *
+     * @SuppressWarnings(StaticAccess);
      */
     private function explodeUri()
     {
@@ -182,7 +183,8 @@ class Request
                 $pair = explode('=', $elem);
 
                 if (isset($pair[1])) {
-                    $this->params[$pair[0]] = $pair[1];
+                    $this->params[$pair[0]]
+                        = \miniworx\Utils\Sanitation::sanitizeUrl($pair[1]);
                 }
             }
         }
@@ -237,7 +239,7 @@ class Request
      *
      * If the app is run via the CLI, then it takes the contents of the
      * `HTTP_POST` environment variable, which should be a list of parameters
-     * in the form 'var1=value1&varN=valueN&...'.
+     * in the form `var1=value1&varN=valueN&...`.
      *
      * @return void Side effects are great.
      */
@@ -283,7 +285,6 @@ class Request
         $params = filter_input_array(INPUT_COOKIE);
 
         if (!isset($params)) {
-            echo "No cookies!" . PHP_EOL;
             $this->cookies = (object)array();
             return;
         }

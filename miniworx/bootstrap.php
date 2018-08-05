@@ -51,7 +51,7 @@ spl_autoload_extensions('.php');
  * Autoloader hack.
  *
  * @param string $class The class to load.
- * @return Nothing.
+ * @return void Nothing.
  */
 function autoloader($class)
 {
