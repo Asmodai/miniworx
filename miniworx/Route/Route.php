@@ -106,15 +106,32 @@ class Route
      * @param string $against The path to match this route against.
      * @return mixed|false A list of bindings for the match if successful;
      *                     otherwise false is returned.
+     *
+     * @see matchArray
      */
     public function match(string &$against)
     {
         $elements = explode('/', $against);
-        if (count($elements) != $this->matchesLen) {
+
+        return $this->matchArray($elements);
+    }
+
+    /**
+     * Match this route against the given array containing path elements.
+     *
+     * @param array $against The path to match this route against.
+     * @return mixed|false A list of bindings for the match if successful;
+     *                     otherwise false is returned.
+     *
+     * @see match
+     */
+    public function matchArray(array &$against)
+    {
+        if (count($against) != $this->matchesLen) {
             return false;
         }
 
-        $combined = array_combine($this->matches, $elements);
+        $combined = array_combine($this->matches, $against);
         foreach (array_keys($combined) as $key) {
             if (! $this->fragmentMatch($combined[$key], $key)) {
                 return false;

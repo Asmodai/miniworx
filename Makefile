@@ -2,10 +2,10 @@
 #
 # Makefile --- MiniworX makefile.
 #
-# Copyright (c) 2018 Paul Ward <pward@alertlogic.com>
+# Copyright (c) 2018 Paul Ward <asmodai@gmail.com>
 #
-# Author:     Paul Ward <pward@alertlogic.com>
-# Maintainer: Paul Ward <pward@alertlogic.com>
+# Author:     Paul Ward <asmodai@gmail.com>
+# Maintainer: Paul Ward <asmodai@gmail.com>
 # Created:    04 Aug 2018 22:12:06
 #
 #{{{ License:
@@ -51,17 +51,18 @@ help:
 	@echo '   callgrind'
 	@echo '   check'
 	@echo '   detector'
+	@echo '   run-mocked'
 
 doc: $(SUBDIRS)
-	@echo 'Running phpdoc'
+	@echo 'Running phpdoc.'
 	@$(PHPDOC) -d $< -t doc/phpdoc
 
 metrics:
-	@echo 'Running PHP Metrics'
+	@echo 'Running PHP Metrics.'
 	@$(PHPMETRICS) --report-html=metrics --level=999 `pwd`
 
 detector: $(SUBDIRS)
-	@echo 'Running PHP Multi-Detect'
+	@echo 'Running PHP Multi-Detect.'
 	@$(PHPMD) `echo '$?' | sed -e 's/ /,/g'`                             \
 	          text                                                       \
 	          cleancode,codesize,controversial,design,naming,unusedcode  \
@@ -69,18 +70,25 @@ detector: $(SUBDIRS)
 
 # phpcs allows multiple directories.
 check: $(SUBDIRS)
-	@echo 'Running PHP Code Sniffer'
+	@echo 'Running PHP Code Sniffer.'
 	@$(PHPCS) -s                               \
 	          -w                               \
 	          --standard=`pwd`/etc/ruleset.xml \
 	          $?
 
 callgrind:
-	@echo 'Generating callgrind data'
+	@echo 'Generating callgrind data.'
 	@$(PHP) -d xdebug.profiler_enable=1                  \
 	        -d xdebug.profiler_output_dir=`pwd`          \
 	        -d xdebug.profiler_output_name=callgrind.out \
 	        -f public/index.php
+
+run-mocked:
+	@echo 'Running with fake HTTP request.'
+	@HTTP_POST='test1=testing&test2=42' \
+     REQUEST_METHOD='GET'    \
+	 REQUEST_URI='/shrines/eastworld/view?arg1=two&arg2=42' \
+	 $(PHP) -f `pwd`/public/index.php
 
 all: help
 
