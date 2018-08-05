@@ -8,11 +8,15 @@
 cachegrind.*
 callgrind.*
 
-# macOS noise
-.DS_Store
+# PHPMetrics noise
+/metrics/
 
 # Generated documentation
-/docs/
+/doc/phpdoc/
 
 # SQL
 database.sql
+
+# macOS noise
+.DS_Store
+
