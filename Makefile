@@ -35,31 +35,66 @@
 #
 #}}}
 
-# Change these to your own versions.  Do not commit this file.
-PHP        = php72
-PHPCS      = phpcs
-PHPMD      = phpmd
-PHPMETRICS = phpmetrics
-PHPDOC     = phpdoc
+OS         := $(shell uname -s)
+ifeq ($(OS), Darwin)
+  PHP      ?= /opt/local/bin/php
+else
+  PHP      ?= php
+endif
+COMPOSER   ?= composer
+PHPCS       = `pwd`/vendor/bin/phpcs
+PHPMD       = `pwd`/vendor/bin/phpmd
+PHPMETRICS  = `pwd`/vendor/bin/phpmetrics
+PHPDOC      = `pwd`/vendor/bin/phpdoc
 
 SUBDIRS = miniworx public
 
+.PHONY: doc metrics detector check detector profile
+
+all: help
+
 help:
 	@echo 'Valid targets are:'
-	@echo '   doc'
-	@echo '   metrics'
-	@echo '   callgrind'
-	@echo '   check'
-	@echo '   detector'
-	@echo '   run-mocked'
+	@echo '   deps        -- Make dependencies.       [requires composer]'
+	@echo '   doc         -- Make documentation.      [requires phpdoc]'
+	@echo '   metrics     -- Make metrics report.     [requires phpmetrics]'
+	@echo '   profile     -- Profile the code.        [requires XDebug]'
+	@echo '   check       -- Check code sanity.       [requires phpcs]'
+	@echo '   detector    -- Check code quality.      [requires phpmd]'
+	@echo '   help        -- Show this message.       [requires eyesight]'
+	@echo '   tools       -- Show tool locations.'
+	@echo '   php-version -- See which version of PHP is used by Make.'
+	@echo '   run         -- Run with mocked data.'
 
-doc: $(SUBDIRS)
+tools:
+	@echo 'Tool locations:'
+	@echo "   OS:         $(OS)"
+	@echo "   PHP:        $(PHP)"
+	@echo "   composer:   $(COMPOSER)"
+	@echo "   phpcs:      $(PHPCS)"
+	@echo "   phpmd:      $(PHPMD)"
+	@echo "   phpmetrics: $(PHPMETRICS)"
+	@echo "   phpdoc:     $(PHPDOC)"
+
+php-version:
+	@$(PHP) --version
+
+deps:
+	@echo "Updating/installing dependencies."
+	@composer validate
+	@composer update
+	@composer install
+
+doc:
 	@echo 'Running phpdoc.'
 	@$(PHPDOC) -d $< -t doc/phpdoc
 
-metrics:
+metrics: $(SUBDIRS)
 	@echo 'Running PHP Metrics.'
-	@$(PHPMETRICS) --report-html=metrics --level=999 `pwd`
+	@$(PHPMETRICS) --report-html=metrics                                        \
+	 --plugins=`pwd`/vendor/phpmetrics/composer-extension/ComposerExtension.php \
+	 --git                                                                      \
+	 `echo '$?' | sed -e 's/ /,/g'`
 
 detector: $(SUBDIRS)
 	@echo 'Running PHP Multi-Detect.'
@@ -70,26 +105,29 @@ detector: $(SUBDIRS)
 
 # phpcs allows multiple directories.
 check: $(SUBDIRS)
+	@(if [[ ! -d 'vendor/squizlabs/php_codesnifer/src/Standards/Security' ]]; \
+	  then sh vendor/pheromone/phpcs-security-audit/symlink.sh; fi)
 	@echo 'Running PHP Code Sniffer.'
 	@$(PHPCS) -s                               \
 	          -w                               \
 	          --standard=`pwd`/etc/ruleset.xml \
 	          $?
 
-callgrind:
+profile: 
 	@echo 'Generating callgrind data.'
-	@$(PHP) -d xdebug.profiler_enable=1                  \
-	        -d xdebug.profiler_output_dir=`pwd`          \
-	        -d xdebug.profiler_output_name=callgrind.out \
+	@HTTP_POST='test1=testing&test2=42'                     \
+	 REQUEST_METHOD='GET'                                   \
+	 REQUEST_URI='/shrines/eastworld/view?arg1=two&arg2=42' \
+	 $(PHP) -d xdebug.profiler_enable=1                     \
+	        -d xdebug.profiler_output_dir=`pwd`             \
+	        -d xdebug.profiler_output_name=callgrind.out    \
 	        -f public/index.php
 
-run-mocked:
+run:
 	@echo 'Running with fake HTTP request.'
-	@HTTP_POST='test1=testing&test2=42' \
-     REQUEST_METHOD='GET'    \
+	@HTTP_POST='test1=testing&test2=42'                     \
+	 REQUEST_METHOD='GET'                                   \
 	 REQUEST_URI='/shrines/eastworld/view?arg1=two&arg2=42' \
 	 $(PHP) -f `pwd`/public/index.php
-
-all: help
 
 # Makefile ends here.

@@ -4,6 +4,10 @@
 *.lck
 *~
 
+# Composer noise
+/vendor/
+/composer.lock
+
 # Profiling noise
 cachegrind.*
 callgrind.*
