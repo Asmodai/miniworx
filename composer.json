@@ -24,8 +24,7 @@
         "squizlabs/php_codesniffer":      "3.*",
         "pheromone/phpcs-security-audit": "*",
         "phpdocumentor/phpdocumentor":    "2.*",
-        "phpmetrics/phpmetrics":          "^2.4.1",
-        "phpmetrics/composer-extension":  "*"
+        "phpmetrics/phpmetrics":          "*"
     },
     "config": {
         "preferred-install": "dist",

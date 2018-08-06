@@ -50,6 +50,9 @@ PHPDOC      = `pwd`/vendor/bin/phpdoc
 
 SUBDIRS = miniworx public
 
+MINIWORX_METRICS = doc/metrics/miniworx.html
+PUBLIC_METRICS   = doc/metrics/public.html
+
 .PHONY: doc metrics detector check detector profile
 
 all: help
@@ -61,11 +64,12 @@ help:
 	@echo '   metrics     -- Make metrics report.     [requires phpmetrics]'
 	@echo '   profile     -- Profile the code.        [requires XDebug]'
 	@echo '   check       -- Check code sanity.       [requires phpcs]'
-	@echo '   detector    -- Check code quality.      [requires phpmd]'
+	@echo '   mess        -- Check code quality.      [requires phpmd]'
 	@echo '   help        -- Show this message.       [requires eyesight]'
 	@echo '   tools       -- Show tool locations.'
 	@echo '   php-version -- See which version of PHP is used by Make.'
 	@echo '   run         -- Run with mocked data.'
+	@echo '   clean       -- Remove generated files.'
 
 tools:
 	@echo 'Tool locations:'
@@ -77,27 +81,29 @@ tools:
 	@echo "   phpmetrics: $(PHPMETRICS)"
 	@echo "   phpdoc:     $(PHPDOC)"
 
+clean:
+	@echo 'Cleaning junk.'
+	-rm -rf doc/metrics
+	-rm -rf doc/phpdoc
+
 php-version:
 	@$(PHP) --version
 
 deps:
-	@echo "Updating/installing dependencies."
-	@composer validate
+	@echo 'Updating/installing dependencies.'
 	@composer update
 	@composer install
 
-doc:
+doc: $(SUBDIRS)
 	@echo 'Running phpdoc.'
 	@$(PHPDOC) -d $< -t doc/phpdoc
 
-metrics: $(SUBDIRS)
+metrics:
 	@echo 'Running PHP Metrics.'
-	@$(PHPMETRICS) --report-html=metrics                                        \
-	 --plugins=`pwd`/vendor/phpmetrics/composer-extension/ComposerExtension.php \
-	 --git                                                                      \
-	 `echo '$?' | sed -e 's/ /,/g'`
+	@$(PHPMETRICS) --report-html=$(MINIWORX_METRICS) -- miniworx
+	@$(PHPMETRICS) --report-html=$(PUBLIC_METRICS)   -- public
 
-detector: $(SUBDIRS)
+mess: $(SUBDIRS)
 	@echo 'Running PHP Multi-Detect.'
 	@$(PHPMD) `echo '$?' | sed -e 's/ /,/g'`                             \
 	          text                                                       \
@@ -106,8 +112,8 @@ detector: $(SUBDIRS)
 
 # phpcs allows multiple directories.
 check: $(SUBDIRS)
-	@(if [[ ! -d 'vendor/squizlabs/php_codesnifer/src/Standards/Security' ]]; \
-	  then sh vendor/pheromone/phpcs-security-audit/symlink.sh; fi)
+	@(test -d 'vendor/squizlabs/php_codesnifer/src/Standards/Security' \
+	  || sh vendor/pheromone/phpcs-security-audit/symlink.sh)
 	@echo 'Running PHP Code Sniffer.'
 	@$(PHPCS) -s                               \
 	          -w                               \
