@@ -104,8 +104,8 @@ class Route
      * Match this route against the given path.
      *
      * @param string $against The path to match this route against.
-     * @return mixed|false A list of bindings for the match if successful;
-     *                     otherwise false is returned.
+     * @return boolean True if the route matches the given path; otherwise
+     *                 false is returned.
      *
      * @see matchArray
      */
@@ -120,8 +120,8 @@ class Route
      * Match this route against the given array containing path elements.
      *
      * @param array $against The path to match this route against.
-     * @return mixed|false A list of bindings for the match if successful;
-     *                     otherwise false is returned.
+     * @return boolean True if the route matches the given path elements;
+     *                 otherwise false is returned.
      *
      * @see match
      */
@@ -138,7 +138,7 @@ class Route
             }
         }
 
-        return $this->bindings($combined);
+        return true;
     }
 
     /**
@@ -220,9 +220,8 @@ class Route
      *
      * @param array $groups The data from which bindings are extracted.
      * @return array An array of bindings.
-     * @private
      */
-    private function bindings(array &$groups)
+    public function bindings(array &$groups)
     {
         if (isset($groups)) {
             $result = array();

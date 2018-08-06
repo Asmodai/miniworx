@@ -49,6 +49,7 @@ namespace miniworx\Route\Constraint;
  */
 class RangeConstraint extends \miniworx\Route\Constraint
 {
+    /** {@inheritdoc} */
     protected $type = 'range';
 
     /**

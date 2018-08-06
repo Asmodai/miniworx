@@ -52,6 +52,7 @@ namespace miniworx\Route\Constraint;
  */
 class ValuesConstraint extends \miniworx\Route\Constraint
 {
+    /** {@inheritdoc} */
     protected $type = 'values';
 
     /**

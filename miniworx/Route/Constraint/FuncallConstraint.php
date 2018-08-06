@@ -35,6 +35,8 @@
  * SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace miniworx\Route\Constraint;
 
 /**
@@ -49,6 +51,7 @@ namespace miniworx\Route\Constraint;
  */
 class FuncallConstraint extends \miniworx\Route\Constraint
 {
+    /** {@inheritdoc} */
     protected $type = 'funcall';
 
     /**
@@ -63,6 +66,7 @@ class FuncallConstraint extends \miniworx\Route\Constraint
             return false;
         }
 
+        // n.b. This triggers a phpcs warning, but it's ok.
         return (call_user_func($this->criteria, $value));
     }
 

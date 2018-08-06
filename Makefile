@@ -37,6 +37,7 @@
 
 OS         := $(shell uname -s)
 ifeq ($(OS), Darwin)
+# Because Apple are special.
   PHP      ?= /opt/local/bin/php
 else
   PHP      ?= php

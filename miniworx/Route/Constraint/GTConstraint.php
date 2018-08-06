@@ -49,6 +49,7 @@ namespace miniworx\Route\Constraint;
  */
 class GTConstraint extends \miniworx\Route\Constraint
 {
+    /** {@inheritdoc} */
     protected $type = 'greater-than';
 
     /**

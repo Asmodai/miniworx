@@ -49,6 +49,7 @@ namespace miniworx\Route\Constraint;
  */
 class UuidConstraint extends \miniworx\Route\Constraint
 {
+    /** {@inheritdoc} */
     protected $type = 'uuid';
 
     /**

@@ -32,6 +32,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+// TODO: This stuff needs to only be set when in a debug mode or whatnot.
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -44,6 +46,7 @@ if (version_compare(PHP_VERSION, $requiredPhpVersion) < 0) {
 date_default_timezone_set('UTC');
 
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
+// TODO: This needs to use the autoloader hack when debug mode is set.
 spl_autoload_register('autoloader');
 spl_autoload_extensions('.php');
 
