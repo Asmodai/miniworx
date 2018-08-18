@@ -16,8 +16,10 @@
     ],
     "license": "MIT",
     "require": {
-        "php":         "^7.0",
-        "ext-openssl": "*"
+        "php":              "^7.0",
+        "ext-openssl":      "*",
+        "firebase/php-jwt": "*",
+        "neomerx/json-api": "*"
     },
     "require-dev": {
         "phpmd/phpmd":                    "@stable",
@@ -27,7 +29,14 @@
         "phpmetrics/phpmetrics":          "*"
     },
     "config": {
-        "preferred-install": "dist",
-        "sort-packages":     true
+        "preferred-install":      "dist",
+        "sort-packages":          true,
+        "optimize-autoloader":    true,
+        "classmap-authoritative": true
+    },
+    "autoload": {
+        "psr-4": {
+            "miniworx\\": "miniworx/"
+        }
     }
 }

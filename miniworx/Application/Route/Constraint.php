@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Lesser-Than-Or-Equal-To constraint.
+ * Base constraint class.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 18:01:00
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,22 +34,22 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
- * Lesser-Than-Or-Equal-To constraint.
+ * Base constraint class.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class LTEConstraint extends \miniworx\Route\Constraint
+abstract class Constraint
 {
-    /** {@inheritdoc} */
-    protected $type = 'lesser-than-or-equal-to';
+    /** @var mixed Constraint criteria. */
+    protected $criteria;
+
+    /** @var string Constraint type. */
+    protected $type;
 
     /**
      * Constraint validation function.
@@ -58,26 +57,45 @@ class LTEConstraint extends \miniworx\Route\Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function validate(&$value)
-    {
-        return ($value <= $this->criteria);
-    }
+    abstract public function validate(&$value);
 
     /**
      * Configure a constraint.
      *
      * @param string $text The configuration.
      * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
      */
-    protected function parse(string &$text)
+    abstract protected function parse(string &$text);
+
+    /**
+     * Constructor method.
+     *
+     * @param string $criteria The critera for the constraint.
+     */
+    public function __construct(string &$criteria)
     {
-        $this->criteria = \miniworx\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
+        $this->parse($criteria);
+    }
+
+    /**
+     * Return the constraint type.
+     *
+     * @return string The constraint type.
+     */
+    public function type()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Return the constraint criteria.
+     *
+     * @return mixed The constraint criteria.
+     */
+    public function criteria()
+    {
+        return $this->criteria;
     }
 }
 
-/* LTEConstraint.php ends here. */
+/* Constraint.php ends here. */

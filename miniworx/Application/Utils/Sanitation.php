@@ -2,17 +2,17 @@
 /**
  * PHP version 7
  *
- * Integer data type filter.
+ * Sanitation utilities.
  *
- * @category Classes
- * @package Classes
+ * @category Utilities
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  *
- * Created:    04 Aug 2018 04:58:48
+ * Created:    05 Aug 2018 01:47:56
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -34,31 +34,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+ 
+declare(strict_types=1);
 
-namespace miniworx\Route\Filter;
+namespace miniworx\Application\Utils;
 
 /**
- * Integer data type filter.
+ * Sanitation utilities.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class IntegerFilter extends \miniworx\Route\Filter
+class Sanitation
 {
     /**
-     * Filter validation function.
+     * Sanitize a URL.
      *
-     * @param mixed $value Value to validate against the filter.
-     * @return boolean True if filter validated; otherwise false.
+     * @param string $url The URL to sanitize.
+     * @return string The sanitized URL.
      */
-    public function validate(&$value)
+    public static function sanitizeUrl(string &$url)
     {
-        return filter_var($value, FILTER_VALIDATE_INT) !== false;
+        return htmlspecialchars(strip_tags($url));
     }
 }
 
-/* IntegerFilter.php ends here. */
+/* Sanitation.php ends here. */

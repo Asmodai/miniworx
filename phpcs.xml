@@ -39,7 +39,6 @@
     <rule ref="Generic.WhiteSpace.ScopeIndent" />
     <rule ref="MySource.PHP.EvalObjectFactory" />
     <rule ref="PEAR.Classes.ClassDeclaration" />
-    <rule ref="PEAR.Commenting.ClassComment" />
     <rule ref="PEAR.Commenting.FileComment" />
     <rule ref="PEAR.Commenting.FunctionComment" />
     <rule ref="PEAR.Commenting.InlineComment" />

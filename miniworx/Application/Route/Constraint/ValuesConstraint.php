@@ -2,12 +2,12 @@
 /**
  * PHP version 7
  *
- * Base filter class.
+ * Values constraint.
  *
- * @category Application
+ * @category Constraints
  * @package MiniworX
- * @author Vivien Richter <vivien-richter@outlook.de>
- * @copyright 2018 Vivien Richter <vivien-richter@outlook.de>
+ * @author Paul Ward <asmodai@gmail.com>
+ * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
@@ -36,52 +36,53 @@
  
 declare(strict_types=1);
 
-namespace miniworx;
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Application class.
+ * Values Constraint.
+ *
+ * The constraint shall be met when the value is a member of the set of
+ * allowed values that comprise the criteria.
  *
  * @package MiniworX
  */
-class Application
+class ValuesConstraint extends \miniworx\Application\Route\Constraint
 {
-    public $routeManager = null;
+    /** {@inheritdoc} */
+    protected $type = 'values';
 
     /**
-     * Constructor method.
+     * Constraint validation function.
+     *
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function __construct()
+    public function validate(&$value)
     {
-        $this->setup();
-        $this->routeManager = new \miniworx\Application\Route\Manager();
+        return in_array($value, $this->criteria);
     }
 
-    // We are doing this here because PHPCS_SecurityAudit fails at spotting
-    // the '.php' extension in the glob andtriggers an error.
-    // @codingStandardsIgnoreStart
     /**
-     * Perform pre-flight setup..
+     * Configure a constraint.
      *
-     * @return void Nothing.
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
      */
-    private function setup()
+    protected function parse(string &$text)
     {
-        foreach (glob(__DIR__ . '/Routes/*.php') as $file) {
-            include_once $file;
+        if (substr($text, 1, 1)     !== '['
+            && substr($text, -1, 1) !== ']'
+        ) {
+            throw new \InvalidArgumentException(
+                "'${text}' is not a valid 'values' argument. A 'values' list " .
+                "should be delimited with '[' and ']', e.g. '[1, 2, 3]'."
+            );
         }
-    }
-    // @codingStandardsIgnoreEnd
-    
-    /**
-     * Starts the application.
-     *
-     * @return void Nothing
-     */
-    public function run()
-    {
-        $request = new Application\Request\Request();
-        $this->routeManager->resolve($request);
+
+        $this->criteria = json_decode($text);
     }
 }
 
-/* Application.php ends here. */
+/* ValuesConstraint.php ends here. */

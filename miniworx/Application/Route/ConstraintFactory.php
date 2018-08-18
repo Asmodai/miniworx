@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Base filter class.
+ * Constraint factory class.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 04:52:39
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,50 +34,37 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
- * Base filter class.
+ * Constraint factory class.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-abstract class Filter
+class ConstraintFactory
 {
-    /** @var string Filter type. */
-    protected $type = "";
-
     /**
-     * Filter validation function.
+     * Constraint factory method.
      *
-     * @param mixed $value Value to validate against the filter.
-     * @return boolean True if filter validated; otherwise false.
+     * @param string $type     The constraint type.
+     * @param mixed  $criteria The constraint criteria.
+     * @return Constraint A newly-created constraint instance.
      */
-    abstract public function validate(&$value);
-
-    /**
-     * Constructor method.
-     *
-     * @param string $type The type of the filter.
-     */
-    public function __construct(string &$type)
+    public static function makeConstraint(string &$type, &$criteria)
     {
-        $this->type = $type;
-    }
+        $prefix = '\\miniworx\\Application\\Route\\Constraint\\';
+        $class  = $prefix . ucfirst(strtolower($type)) . 'Constraint';
 
-    /**
-     * Return the type of the filter.
-     *
-     * @return string The filter type.
-     */
-    public function type()
-    {
-        return $this->type;
+        if (class_exists($class, true)) {
+            return new $class($criteria);
+        }
+
+        throw new InvalidConstraintException(
+            "Invalid constraint type '${type}'"
+        );
     }
 }
 
-/* Filter.php ends here. */
+/* ConstraintFactory.php ends here. */

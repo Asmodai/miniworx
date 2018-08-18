@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Greater-Than-Or-Equal-To constraint.
+ * Function call constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 17:20:05
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,22 +34,19 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Greater-Than-Or-Equal-To constraint.
+ * Function call constraint.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class GTEConstraint extends \miniworx\Route\Constraint
+class FuncallConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
-    protected $type = 'greater-than-or-equal-to';
+    protected $type = 'funcall';
 
     /**
      * Constraint validation function.
@@ -60,7 +56,12 @@ class GTEConstraint extends \miniworx\Route\Constraint
      */
     public function validate(&$value)
     {
-        return ($value >= $this->criteria);
+        if (!isset($this->criteria)) {
+            return false;
+        }
+
+        // n.b. This triggers a phpcs warning, but it's ok.
+        return (call_user_func($this->criteria, $value));
     }
 
     /**
@@ -73,11 +74,12 @@ class GTEConstraint extends \miniworx\Route\Constraint
      */
     protected function parse(string &$text)
     {
-        $this->criteria = \miniworx\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
+        $callable = null;
+
+        if (is_callable($text, false, $callable)) {
+            $this->criteria = $callable;
+        }
     }
 }
 
-/* GTEConstraint.php ends here. */
+/* FuncallConstraint.php ends here. */

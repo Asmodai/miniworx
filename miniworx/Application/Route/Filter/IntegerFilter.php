@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Function call constraint.
+ * Integer data type filter.
  *
- * @category Classes
- * @package Classes
+ * @category Filters
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 20:01:36
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -36,56 +35,26 @@
  */
 
 declare(strict_types=1);
-
-namespace miniworx\Route\Constraint;
+ 
+namespace miniworx\Application\Route\Filter;
 
 /**
- * Function call constraint.
+ * Integer data type filter.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class FuncallConstraint extends \miniworx\Route\Constraint
+class IntegerFilter extends \miniworx\Application\Route\Filter
 {
-    /** {@inheritdoc} */
-    protected $type = 'funcall';
-
     /**
-     * Constraint validation function.
+     * Filter validation function.
      *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
+     * @param mixed $value Value to validate against the filter.
+     * @return boolean True if filter validated; otherwise false.
      */
     public function validate(&$value)
     {
-        if (!isset($this->criteria)) {
-            return false;
-        }
-
-        // n.b. This triggers a phpcs warning, but it's ok.
-        return (call_user_func($this->criteria, $value));
-    }
-
-    /**
-     * Configure a constraint.
-     *
-     * @param string $text The configuration.
-     * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
-     */
-    protected function parse(string &$text)
-    {
-        $callable = null;
-
-        if (is_callable($text, false, $callable)) {
-            $this->criteria = $callable;
-        }
+        return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 }
 
-/* FuncallConstraint.php ends here. */
+/* IntegerFilter.php ends here. */

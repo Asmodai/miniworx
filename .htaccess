@@ -10,4 +10,3 @@ RewriteRule (.+) public/$1 [L]
 # Route all other requests
 RewriteRule (.*) public/index.php [L]
 
-# Source: http://stackoverflow.com/a/41516968/3699361

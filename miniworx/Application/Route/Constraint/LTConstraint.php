@@ -2,17 +2,17 @@
 /**
  * PHP version 7
  *
- * Values constraint.
+ * Lesser-Than constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
  *
- * Created:    04 Aug 2018 18:02:44
+ * Created:    04 Aug 2018 17:58:51
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,25 +35,19 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Values Constraint.
+ * Lesser-Than constraint.
  *
- * The constraint shall be met when the value is a member of the set of
- * allowed values that comprise the criteria.
- *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class ValuesConstraint extends \miniworx\Route\Constraint
+class LTConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
-    protected $type = 'values';
+    protected $type = 'lesser-than';
 
     /**
      * Constraint validation function.
@@ -63,7 +57,7 @@ class ValuesConstraint extends \miniworx\Route\Constraint
      */
     public function validate(&$value)
     {
-        return in_array($value, $this->criteria);
+        return ($value < $this->criteria);
     }
 
     /**
@@ -76,17 +70,11 @@ class ValuesConstraint extends \miniworx\Route\Constraint
      */
     protected function parse(string &$text)
     {
-        if (substr($text, 1, 1)     !== '['
-            && substr($text, -1, 1) !== ']'
-        ) {
-            throw new \InvalidArgumentException(
-                "'${text}' is not a valid 'values' argument. A 'values' list " .
-                "should be delimited with '[' and ']', e.g. '[1, 2, 3]'."
-            );
-        }
-
-        $this->criteria = json_decode($text);
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
+            $text,
+            TYPE_INTEGER
+        );
     }
 }
 
-/* ValuesConstraint.php ends here. */
+/* LTConstraint.php ends here. */

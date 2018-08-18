@@ -1,0 +1,126 @@
+<?php
+/**
+ * PHP version 7
+ *
+ * Dispatch tree class.
+ *
+ * @category Classes
+ * @package Classes
+ * @author Paul Ward <asmodai@gmail.com>
+ * @copyright 2018 Paul Ward <asmodai@gmail.com>
+ *
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @link https://www.github.com/...
+ */
+/*
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+declare(strict_types=1);
+
+namespace miniworx\Application\Route;
+
+/**
+ * Dispatch tree class.
+ *
+ * @package Vendor/Project
+ */
+class Tree
+{
+    /** @var array The tree root object. */
+    private $root = array();
+
+    /**
+     * Constructor method.
+     */
+    public function __construct()
+    {
+        // Root node is always empty.
+        $this->root = array();
+    }
+
+    /**
+     * Inserts a node into a tree.
+     *
+     * @param array  $path  The path of the route.
+     * @param object $route The route class.
+     * @return void Nothing.
+     */
+    public function insert(array $path, &$route)
+    {
+        $current = &$this->root;
+        $leaf    = array_pop($path);
+
+        if (substr($leaf, 0, 1) === ':') {
+            $leaf = '*';
+        }
+
+        foreach ($path as $item) {
+            if (substr($item, 0, 1) === ':') {
+                $item = '*';
+            }
+
+            if (!isset($current[$item])) {
+                $current[$item] = array();
+            }
+
+            $current = &$current[$item];
+        }
+
+        if (!isset($current[$leaf])) {
+            $current[$leaf] = array();
+        }
+
+        $current[$leaf]['__i'] = $route;
+    }
+
+    /**
+     * Search a tree for the given path.
+     *
+     * @param array $path The path to search for..
+     * @return mixed|false The resulting path if found, otherwise false.
+     */
+    public function search(array $path)
+    {
+        $current = &$this->root;
+
+        foreach ($path as $item) {
+            if (!isset($current[$item])) {
+                // Try descending '*'.
+                if (!isset($current['*'])) {
+                    return false;
+                }
+
+                $item = '*';
+            }
+
+            $current = &$current[$item];
+        }
+
+        if (!isset($current['__i'])) {
+            return false;
+        }
+
+        return $current['__i'];
+    }
+}
+
+/* Tree.php ends here. */

@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Greater-Than constraint.
+ * Base filter class.
  *
- * @category Classes
- * @package Classes
+ * @category Filters
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 17:55:22
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,49 +34,47 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
- * Greater-Than constraint.
+ * Base filter class.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class GTConstraint extends \miniworx\Route\Constraint
+abstract class Filter
 {
-    /** {@inheritdoc} */
-    protected $type = 'greater-than';
+    /** @var string Filter type. */
+    protected $type = "";
 
     /**
-     * Constraint validation function.
+     * Filter validation function.
      *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
+     * @param mixed $value Value to validate against the filter.
+     * @return boolean True if filter validated; otherwise false.
      */
-    public function validate(&$value)
+    abstract public function validate(&$value);
+
+    /**
+     * Constructor method.
+     *
+     * @param string $type The type of the filter.
+     */
+    public function __construct(string &$type)
     {
-        return ($value > $this->criteria);
+        $this->type = $type;
     }
 
     /**
-     * Configure a constraint.
+     * Return the type of the filter.
      *
-     * @param string $text The configuration.
-     * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
+     * @return string The filter type.
      */
-    protected function parse(string &$text)
+    public function type()
     {
-        $this->criteria = \miniworx\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
+        return $this->type;
     }
 }
 
-/* GTConstraint.php ends here. */
+/* Filter.php ends here. */

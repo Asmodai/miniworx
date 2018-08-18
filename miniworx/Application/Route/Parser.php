@@ -4,16 +4,15 @@
  *
  * Filter/constraint parser.
  *
- * @category Classes
- * @package Classes
+ * @category Route
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 04:37:12
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,17 +34,14 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
  * Filter/constraint parser.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
 class Parser
 {

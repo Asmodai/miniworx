@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Lesser-Than constraint.
+ * Lesser-Than-Or-Equal-To constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 17:58:51
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,22 +34,19 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Lesser-Than constraint.
+ * Lesser-Than-Or-Equal-To constraint.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class LTConstraint extends \miniworx\Route\Constraint
+class LTEConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
-    protected $type = 'lesser-than';
+    protected $type = 'lesser-than-or-equal-to';
 
     /**
      * Constraint validation function.
@@ -60,7 +56,7 @@ class LTConstraint extends \miniworx\Route\Constraint
      */
     public function validate(&$value)
     {
-        return ($value < $this->criteria);
+        return ($value <= $this->criteria);
     }
 
     /**
@@ -73,11 +69,11 @@ class LTConstraint extends \miniworx\Route\Constraint
      */
     protected function parse(string &$text)
     {
-        $this->criteria = \miniworx\Utils\Types::toNumber(
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
             $text,
             TYPE_INTEGER
         );
     }
 }
 
-/* LTConstraint.php ends here. */
+/* LTEConstraint.php ends here. */

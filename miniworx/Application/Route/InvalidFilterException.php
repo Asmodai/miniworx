@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Filter factory class.
+ * Exception raised for invalid filters.
  *
- * @category Classes
- * @package Classes
+ * @category Route
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 04:56:05
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,42 +34,17 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
- * Filter factory class.
+ * Exception raised for invalid filters.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class FilterFactory
+class InvalidFilterException extends \Exception
 {
-    /**
-     * Filter factory method.
-     *
-     * @param string $type The filter type.
-     * @return Filter A newly-created filter instance.
-     *
-     * @throw InvalidFilterException Thrown when the type of filter requested
-     *        is invalid.
-     */
-    public static function makeFilter(string &$type)
-    {
-        $prefix = '\\miniworx\\Route\\Filter\\';
-        $class  = $prefix . ucfirst(strtolower($type)) . 'Filter';
-
-        if (class_exists($class, true)) {
-            return new $class($type);
-        }
-
-        throw new InvalidFilterException(
-            "Invalid filter type '${type}'."
-        );
-    }
 }
 
-/* FilterFactory.php ends here. */
+/* InvalidFilterException.php ends here. */

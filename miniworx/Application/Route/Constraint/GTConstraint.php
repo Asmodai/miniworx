@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Base constraint class.
+ * Greater-Than constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 05:00:52
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,25 +34,19 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Base constraint class.
+ * Greater-Than constraint.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-abstract class Constraint
+class GTConstraint extends \miniworx\Application\Route\Constraint
 {
-    /** @var mixed Constraint criteria. */
-    protected $criteria;
-
-    /** @var string Constraint type. */
-    protected $type;
+    /** {@inheritdoc} */
+    protected $type = 'greater-than';
 
     /**
      * Constraint validation function.
@@ -61,45 +54,26 @@ abstract class Constraint
      * @param mixed $value The value to validate against the constraint.
      * @return boolean True if the constraint is validated; otherwise false.
      */
-    abstract public function validate(&$value);
+    public function validate(&$value)
+    {
+        return ($value > $this->criteria);
+    }
 
     /**
      * Configure a constraint.
      *
      * @param string $text The configuration.
      * @return void Empty.
-     */
-    abstract protected function parse(string &$text);
-
-    /**
-     * Constructor method.
      *
-     * @param string $criteria The critera for the constraint.
+     * @SuppressWarnings(StaticAccess)
      */
-    public function __construct(string &$criteria)
+    protected function parse(string &$text)
     {
-        $this->parse($criteria);
-    }
-
-    /**
-     * Return the constraint type.
-     *
-     * @return string The constraint type.
-     */
-    public function type()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Return the constraint criteria.
-     *
-     * @return mixed The constraint criteria.
-     */
-    public function criteria()
-    {
-        return $this->criteria;
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
+            $text,
+            TYPE_INTEGER
+        );
     }
 }
 
-/* Constraint.php ends here. */
+/* GTConstraint.php ends here. */

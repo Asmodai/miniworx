@@ -4,16 +4,15 @@
  *
  * Range constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 18:36:38
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,19 +34,16 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route\Constraint;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route\Constraint;
 
 /**
  * Range constraint.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class RangeConstraint extends \miniworx\Route\Constraint
+class RangeConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
     protected $type = 'range';
@@ -83,7 +79,7 @@ class RangeConstraint extends \miniworx\Route\Constraint
                 /* Fallthrough. */
             case '[':
                 $value  = substr($text, 1);
-                $number = \miniworx\Utils\Types::toNumber($value);
+                $number = \miniworx\Application\Utils\Types::toNumber($value);
                                                           
                 break;
             default:
@@ -117,7 +113,7 @@ class RangeConstraint extends \miniworx\Route\Constraint
                 /* Fallthrough. */
             case ']':
                 $value  = substr($text, 0, -1);
-                $number = \miniworx\Utils\Types::toNumber($value);
+                $number = \miniworx\Application\Utils\Types::toNumber($value);
                 break;
             default:
                 throw new \InvalidArgumentException(

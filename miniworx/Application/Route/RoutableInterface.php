@@ -2,7 +2,7 @@
 /**
  * PHP version 7
  *
- * Sanitation utilities.
+ * Interface for routable things.
  *
  * @category Classes
  * @package Classes
@@ -10,10 +10,9 @@
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
- *
- * Created:    05 Aug 2018 01:47:56
- *
+ * @link https://www.github.com/...
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,30 +34,16 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Utils;
+namespace miniworx\Application\Route;
 
 /**
- * Sanitation utilities.
+ * Interface for routable things.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package Vendor/Project
  */
-class Sanitation
+interface RoutableInterface
 {
-    /**
-     * Sanitize a URL.
-     *
-     * @param string $url The URL to sanitize.
-     * @return string The sanitized URL.
-     */
-    public static function sanitizeUrl(string &$url)
-    {
-        return htmlspecialchars(strip_tags($url));
-    }
+    public function route();
 }
 
-/* Sanitation.php ends here. */
+/* RoutableInterface.php ends here. */

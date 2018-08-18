@@ -53,6 +53,8 @@ SUBDIRS = miniworx public
 MINIWORX_METRICS = doc/metrics/miniworx.html
 PUBLIC_METRICS   = doc/metrics/public.html
 
+HTTP_PORT = 8080
+
 .PHONY: doc metrics detector check detector profile
 
 all: help
@@ -68,7 +70,7 @@ help:
 	@echo '   help        -- Show this message.       [requires eyesight]'
 	@echo '   tools       -- Show tool locations.'
 	@echo '   php-version -- See which version of PHP is used by Make.'
-	@echo '   run         -- Run with mocked data.'
+	@echo '   run         -- Run via inbuilt PHP web server.'
 	@echo '   clean       -- Remove generated files.'
 
 tools:
@@ -115,9 +117,9 @@ check: $(SUBDIRS)
 	@(test -d 'vendor/squizlabs/php_codesnifer/src/Standards/Security' \
 	  || sh vendor/pheromone/phpcs-security-audit/symlink.sh)
 	@echo 'Running PHP Code Sniffer.'
-	@$(PHPCS) -s                               \
-	          -w                               \
-	          --standard=`pwd`/etc/ruleset.xml \
+	@$(PHPCS) -s                         \
+	          -w                         \
+	          --standard=`pwd`/phpcs.xml \
 	          $?
 
 profile: 
@@ -131,10 +133,7 @@ profile:
 	        -f public/index.php
 
 run:
-	@echo 'Running with fake HTTP request.'
-	@HTTP_POST='test1=testing&test2=42'                     \
-	 REQUEST_METHOD='GET'                                   \
-	 REQUEST_URI='/shrines/eastworld/view?arg1=two&arg2=42' \
-	 $(PHP) -f `pwd`/public/index.php
+	@echo 'Running PHP web server.'
+	@$(PHP) -S localhost:$(HTTP_PORT) -t public
 
 # Makefile ends here.

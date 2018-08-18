@@ -4,16 +4,15 @@
  *
  * Route class.
  *
- * @category Classes
- * @package Classes
+ * @category Route
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 04:14:15
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,50 +34,47 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+
+namespace miniworx\Application\Route;
 
 /**
  * Route class.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
 class Route
 {
     /**
-     * @var string Textual representation of the route.
-     */
-    private $text = '';
-
-    /**
      * @var array Array of fragments used for matching routes.
      */
-    private $matches = array();
-
-    /**
-     * @var integer Length of fragments array.
-     */
-    private $matchesLen = 0;
+    private $path = array();
 
     /**
      * @var array Array of variable bindings.
      */
     private $bindings = array();
+    
+    /**
+     * @var object Target class for route.
+     */
+    private $instance = null;
 
     /**
      * Constructor method.
      *
-     * @param string $path The route's path.
+     * @param string $path     The route's path.
+     * @param mixed  $instance The route's class instance.
      *
      * @SuppressWarnings(StaticAccess)
      */
-    public function __construct(string $path)
+    public function __construct(string $path, $instance = null)
     {
-        foreach (explode('/', $path) as $fragment) {
+        if (isset($instance)) {
+            $this->instance = $instance;
+        }
+    
+        foreach (explode('/', ltrim($path, '/')) as $fragment) {
             if (substr($fragment, 0, 1) === ':') {
                 $name = substr($fragment, 1);
 
@@ -86,18 +82,35 @@ class Route
                     $name = $parsed['variable'];
 
                     $this->bindings[$name] = $parsed;
-                    $this->matches[]       = ':' . $name;
+                    $this->path[]          = ':' . $name;
                     continue;
                 }
 
                 $this->bindings[$name] = $name;
             }
 
-            $this->matches[] = $fragment;
+            $this->path[] = $fragment;
         }
-
-        $this->matchesLen = count($this->matches);
-        $this->text       = implode('/', $this->matches);
+    }
+    
+    /**
+     * Returns the route's class instance.
+     *
+     * @return object The route's class instance.
+     */
+    public function instance()
+    {
+        return $this->instance;
+    }
+    
+    /**
+     * Returns the route's path.
+     *
+     * @return array The route's path.
+     */
+    public function path()
+    {
+        return $this->path;
     }
 
     /**
@@ -139,16 +152,6 @@ class Route
         }
 
         return true;
-    }
-
-    /**
-     * Returns the textual representation of this route.
-     *
-     * @return string The textual representation of this route.
-     */
-    public function text()
-    {
-        return $this->text;
     }
 
     /**
@@ -225,9 +228,10 @@ class Route
     {
         if (isset($groups)) {
             $result = array();
-
+            
+            $combined = array_combine($this->path, $groups);
             foreach (array_keys($this->bindings) as $key) {
-                $value = $groups[':' . $key];
+                $value = $combined[':' . $key];
 
                 if (!$this->applyFilter($value, $key)) {
                     // TODO: Exception

@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Constraint factory class.
+ * Filter factory class.
  *
- * @category Classes
- * @package Classes
+ * @category Filters
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 05:04:38
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,40 +34,39 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route;
 
 /**
- * Constraint factory class.
+ * Filter factory class.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class ConstraintFactory
+class FilterFactory
 {
     /**
-     * Constraint factory method.
+     * Filter factory method.
      *
-     * @param string $type     The constraint type.
-     * @param mixed  $criteria The constraint criteria.
-     * @return Constraint A newly-created constraint instance.
+     * @param string $type The filter type.
+     * @return Filter A newly-created filter instance.
+     *
+     * @throw InvalidFilterException Thrown when the type of filter requested
+     *        is invalid.
      */
-    public static function makeConstraint(string &$type, &$criteria)
+    public static function makeFilter(string &$type)
     {
-        $prefix = '\\miniworx\\Route\\Constraint\\';
-        $class  = $prefix . ucfirst(strtolower($type)) . 'Constraint';
+        $prefix = '\\miniworx\\Application\\Route\\Filter\\';
+        $class  = $prefix . ucfirst(strtolower($type)) . 'Filter';
 
         if (class_exists($class, true)) {
-            return new $class($criteria);
+            return new $class($type);
         }
 
-        throw new InvalidConstraintException(
-            "Invalid constraint type '${type}'"
+        throw new InvalidFilterException(
+            "Invalid filter type '${type}'."
         );
     }
 }
 
-/* ConstraintFactory.php ends here. */
+/* FilterFactory.php ends here. */

@@ -4,8 +4,8 @@
  *
  * Various type-based utilities and hacks.
  *
- * @category Classes
- * @package Classes
+ * @category Utilities
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
@@ -35,7 +35,9 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Utils;
+declare(strict_types=1);
+
+namespace miniworx\Application\Utils;
 
 define('TYPE_INTEGER', 1);
 define('TYPE_FLOAT',   2);
@@ -44,15 +46,54 @@ define('TYPE_BOOLEAN', 3);
 /**
  * Various type-based utilities and hacks.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
 class Types
 {
+    /**
+     * Is the given value a string?
+     *
+     * @param mixed $value The value to test.
+     * @return bool True if the value is a string; otherwise false.
+     */
+    public static function isString(&$value)
+    {
+        if (is_string($value)) {
+            return true;
+        }
+
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Convert a given value to a string.
+     *
+     * @param mixed $value The value to coerce.
+     * @return string The converted value.
+     *
+     * @throw \InvalidArgumentException Thrown when the given value cannot
+     *        be coerced to a string.
+     *
+     */
+    public static function toString(&$value)
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_object($value) && !method_exists($value, '__toString')) {
+            throw \InvalidArgumentException(
+                "The given value cannot be coerced to a string."
+            );
+        }
+
+        return '' . $value;
+    }
+
     /**
      * Convert a given value to a numeric value in a safer manner than
      * `intval'.

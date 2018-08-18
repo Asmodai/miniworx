@@ -2,18 +2,17 @@
 /**
  * PHP version 7
  *
- * Exception raised for invalid filters.
+ * Greater-Than-Or-Equal-To constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
- *
- * Created:    04 Aug 2018 04:49:47
- *
+ */
+/*
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -35,20 +34,46 @@
  * SOFTWARE.
  */
 
-namespace miniworx\Route;
+declare(strict_types=1);
+ 
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Exception raised for invalid filters.
+ * Greater-Than-Or-Equal-To constraint.
  *
- * @category Classes
- * @package Classes
- * @author Paul Ward <asmodai@gmail.com>
- * @copyright 2018 Paul Ward <asmodai@gmail.com>
- * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @package MiniworX
  */
-class InvalidFilterException extends \Exception
+class GTEConstraint extends \miniworx\Application\Route\Constraint
 {
+    /** {@inheritdoc} */
+    protected $type = 'greater-than-or-equal-to';
+
+    /**
+     * Constraint validation function.
+     *
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
+     */
+    public function validate(&$value)
+    {
+        return ($value >= $this->criteria);
+    }
+
+    /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
+     */
+    protected function parse(string &$text)
+    {
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
+            $text,
+            TYPE_INTEGER
+        );
+    }
 }
 
-/* InvalidFilterException.php ends here. */
+/* GTEConstraint.php ends here. */
