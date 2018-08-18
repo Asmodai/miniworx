@@ -32,6 +32,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+ 
+declare(strict_types=1);
 
 namespace miniworx;
 
@@ -145,7 +147,7 @@ class Bootstrap
      */
     private function preflight()
     {
-        foreach (glob(__DIR__ . '/Routes/*.php') as $file) {
+        foreach (glob(__DIR__ . '/../routes/*.php') as $file) {
             include_once $file;
         }
     }

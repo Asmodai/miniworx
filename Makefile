@@ -48,7 +48,7 @@ PHPMD       = `pwd`/vendor/bin/phpmd
 PHPMETRICS  = `pwd`/vendor/bin/phpmetrics
 PHPDOC      = `pwd`/vendor/bin/phpdoc
 
-SUBDIRS = miniworx public
+SUBDIRS = application routes public
 
 MINIWORX_METRICS = doc/metrics/miniworx.html
 PUBLIC_METRICS   = doc/metrics/public.html
@@ -98,7 +98,8 @@ deps:
 
 doc: $(SUBDIRS)
 	@echo 'Running phpdoc.'
-	@$(PHPDOC) -d $< -t doc/phpdoc
+	@$(PHPDOC) -d `echo '$?' | sed -e 's/ /,/g'` \
+	 -t doc/phpdoc
 
 metrics:
 	@echo 'Running PHP Metrics.'

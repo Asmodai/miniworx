@@ -56,9 +56,6 @@ class Application
         $this->routeManager = new \miniworx\Application\Route\Manager();
     }
 
-    // We are doing this here because PHPCS_SecurityAudit fails at spotting
-    // the '.php' extension in the glob andtriggers an error.
-    // @codingStandardsIgnoreStart
     /**
      * Perform pre-flight setup..
      *
@@ -66,12 +63,9 @@ class Application
      */
     private function setup()
     {
-        foreach (glob(__DIR__ . '/Routes/*.php') as $file) {
-            include_once $file;
-        }
+        // Custom setup here.
     }
-    // @codingStandardsIgnoreEnd
-    
+
     /**
      * Starts the application.
      *
