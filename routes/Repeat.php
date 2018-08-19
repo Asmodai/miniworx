@@ -11,6 +11,7 @@
  *
  * @license https://opensource.org/licenses/MIT The MIT License
  * @link https://github.com/vivi90/miniworx
+ *
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -39,13 +40,12 @@ declare(strict_types=1);
 namespace miniworx\Routes;
 
 /**
- * An example route.
+ * An example route that repeats the request as the response.
  *
- * @package Vendor/Project
+ * @package MiniworX
  */
 class Repeat implements \miniworx\Application\Route\RoutableInterface
 {
-
     /**
      * Return the route path.
      *
@@ -64,12 +64,116 @@ class Repeat implements \miniworx\Application\Route\RoutableInterface
      */
     public function get(&$request)
     {
-        $request->ok;
+        /**
+         * @api {get} /repeat Repeat GET request back as response.
+         * @apiName GetRepeat
+         * @apiGroup Repeat
+         *
+         * @apiDescription Repeat back the contents of the HTTP request.
+         *
+         * @apiSuccess {String} data Data block
+         * @apiSuccessExample Success-Response:
+         *    HTTP/1.1 200 OK
+         *    {
+         *      "data": {
+         *        "request": {
+         *          "bindings": [],
+         *          "body": {},
+         *          "cookies": {},
+         *          "headers": {
+         *            "Host": "127.0.0.1",
+         *          },
+         *          "method": "GET",
+         *          "params": [],
+         *          "protocol": "HTTP/1.1",
+         *          "uri": "/repeat"
+         *        }
+         *      }
+         *    }
+         */
+        $request->setStatus(200);
+        
         return [
             'data' => [
                 'request' => $request->expose()
             ]
         ];
+    }
+
+    /**
+     * Handle the HTTP `PUT` verb for this route.
+     *
+     * @param \miniworx\Application\Request\Request $request The request.
+     * @return array
+     */
+    public function put(&$request)
+    {
+        /**
+         * @api {put} /repeat Repeat PUT request back as response.
+         * @apiName PutRepeat
+         * @apiGroup Repeat
+         *
+         * @apiDescription Repeat back the contents of the HTTP request.
+         *
+         * @apiSuccess {String} data Data block
+         * @apiSuccessExample Success-Response:
+         *    HTTP/1.1 200 OK
+         *    {
+         *      "data": {
+         *        "request": {
+         *          "bindings": [],
+         *          "body": {},
+         *          "cookies": {},
+         *          "headers": {
+         *            "Host": "127.0.0.1",
+         *          },
+         *          "method": "PUT",
+         *          "params": [],
+         *          "protocol": "HTTP/1.1",
+         *          "uri": "/repeat"
+         *        }
+         *      }
+         *    }
+         */
+        return $this->get($request);
+    }
+
+    /**
+     * Handle the HTTP `POST` verb for this route.
+     *
+     * @param \miniworx\Application\Request\Request $request The request.
+     * @return array
+     */
+    public function post(&$request)
+    {
+        /**
+         * @api {post} /repeat Repeat POST request back as response.
+         * @apiName PostRepeat
+         * @apiGroup Repeat
+         *
+         * @apiDescription Repeat back the contents of the HTTP request.
+         *
+         * @apiSuccess {String} data Data block
+         * @apiSuccessExample Success-Response:
+         *    HTTP/1.1 200 OK
+         *    {
+         *      "data": {
+         *        "request": {
+         *          "bindings": [],
+         *          "body": {},
+         *          "cookies": {},
+         *          "headers": {
+         *            "Host": "127.0.0.1",
+         *          },
+         *          "method": "POST",
+         *          "params": [],
+         *          "protocol": "HTTP/1.1",
+         *          "uri": "/repeat"
+         *        }
+         *      }
+         *    }
+         */
+        return $this->get($request);
     }
 }
 
