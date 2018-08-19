@@ -38,6 +38,8 @@ declare(strict_types=1);
 
 namespace miniworx\Application\Route;
 
+use \miniworx\Application\Exceptions;
+
 /**
  * Constraint factory class.
  *
@@ -61,7 +63,7 @@ class ConstraintFactory
             return new $class($criteria);
         }
 
-        throw new InvalidConstraintException(
+        throw new Exceptions\InvalidConstraintException(
             "Invalid constraint type '${type}'"
         );
     }

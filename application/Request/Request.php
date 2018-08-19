@@ -38,6 +38,8 @@ declare(strict_types=1);
 
 namespace miniworx\Application\Request;
 
+use \miniworx\Application\Exceptions;
+
 /**
  * Request class.
  *
@@ -45,37 +47,81 @@ namespace miniworx\Application\Request;
  */
 class Request
 {
-    /** @var array Variable bindings. */
+    /**
+     * Variable bindings.
+     *
+     * @var array
+     */
     private $bindings = array();
     
-    /** @var array Request body. */
+    /**
+     * Request body.
+     *
+     * @var array
+     */
     private $body = array();
 
-    /** @var array Cookie data. */
+    /**
+     * Cookie data.
+     *
+     * @var array
+     */
     private $cookies = array();
     
-    /** @var array Headers. */
+    /**
+     * Server headers.
+     *
+     * @var array
+     */
     private $headers = array();    
     
-    /** @var array Output headers. */
+    /**
+     * Output headers.
+     *
+     * @var array
+     */
     private $outputHeaders = array();
     
-    /** @var string The request method. */
+    /**
+     * Request method.
+     *
+     * @var string
+     */
     private $method = null;
 
-    /** @var array Parameters passed in via the URL. */
+    /**
+     * Parameters passed in via the URL.
+     *
+     * @var array
+     */
     private $params = array();
     
-    /** @var Transport protocol (HTTP, HTTPS et al). */
+    /**
+     * Transport protocol (HTTP, HTTPS et al).
+     *
+     * @var string
+     */
     private $protocol = null;
    
-    /** @var array The URI in array form. */
+    /**
+     * The URI in array form.
+     *
+     * @var array
+     */
     private $segments = array();
     
-    /** @var string The path and parameters URI components. */
+    /**
+     * The path and parameters URI components.
+     *
+     * @var string
+     */
     private $uri = null;
     
-    /** @var int HTTP status code. */
+    /**
+     * HTTP status code.
+     *
+     * @var int
+     */
     private $status = 0;
 
     /**
@@ -286,13 +332,13 @@ class Request
         }
 
         if (empty($input)) {
-            throw new \InvalidArgumentException(
+            throw new Exceptions\InvalidArgumentException(
                 "No input method given."
             );
         }
 
         if (!in_array($input, $methods)) {
-            throw new \InvalidArgumentException(
+            throw new Exceptions\InvalidArgumentException(
                 "${input} is not a valid HTTP method."
             );
         }
@@ -354,7 +400,7 @@ class Request
      * @param int $code The HTTP status code to set.
      * @return int The requested HTTP status code.
      */
-    private function setStatus($code)
+    public function setStatus($code)
     {
         return ($this->status = $code);
     }
@@ -367,16 +413,6 @@ class Request
     public function status()
     {
         return $this->status;
-    }
-
-    /**
-     * Set the request's HTTP status code to '200' (OK).
-     *
-     * @return int The requested HTTP status code.
-     */
-    public function ok()
-    {
-        return $this->setStatus(200);
     }
 }
 

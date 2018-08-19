@@ -2,9 +2,9 @@
 /**
  * PHP version 7
  *
- * Greater-Than constraint.
+ * Exception raised when a constraint has failed.
  *
- * @category Constraints
+ * @category Exceptions
  * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
@@ -36,44 +36,15 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route\Constraint;
+namespace miniworx\Application\Exceptions;
 
 /**
- * Greater-Than constraint.
+ * Exception raised when a constraint has failed.
  *
  * @package MiniworX
  */
-class GtConstraint extends \miniworx\Application\Route\Constraint
+class FailedConstraintException extends Exception
 {
-    /** {@inheritdoc} */
-    protected $type = 'greater-than';
-
-    /**
-     * Constraint validation function.
-     *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
-     */
-    public function validate(&$value)
-    {
-        return ($value > $this->criteria);
-    }
-
-    /**
-     * Configure a constraint.
-     *
-     * @param string $text The configuration.
-     * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
-     */
-    protected function parse(string &$text)
-    {
-        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
-    }
 }
 
-/* GtConstraint.php ends here. */
+/* FailedConstraintException.php ends here. */

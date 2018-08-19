@@ -4,7 +4,7 @@
  *
  * Exception raised for invalid constraints.
  *
- * @category Route
+ * @category Exceptions
  * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
@@ -36,7 +36,7 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route;
+namespace miniworx\Application\Exceptions;
 
 /**
  * Exception raised for invalid constraints.

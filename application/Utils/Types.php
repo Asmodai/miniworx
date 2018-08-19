@@ -90,6 +90,10 @@ class Types
                 "The given value cannot be coerced to a string."
             );
         }
+        
+        if (is_array($value)) {
+            return implode(',', $value);
+        }
 
         return '' . $value;
     }

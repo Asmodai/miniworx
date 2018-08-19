@@ -45,7 +45,11 @@ namespace miniworx\Application\Route;
  */
 abstract class Filter
 {
-    /** @var string Filter type. */
+    /**
+     * Filter type.
+     *
+     * @var string
+     */
     protected $type = "";
 
     /**
@@ -66,6 +70,28 @@ abstract class Filter
         $this->type = $type;
     }
 
+    /**
+     * Coerce the filter to a string value.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->type;
+    }
+    
+    /**
+     * Return a JSON representation of the filter.
+     *
+     * @return array
+     */
+    public function toJson()
+    {
+        $value = \miniworx\Application\Utils\Types::toString($this->type);
+        
+        return $value;
+    }
+    
     /**
      * Return the type of the filter.
      *

@@ -2,9 +2,9 @@
 /**
  * PHP version 7
  *
- * Base constraint class.
+ * Exception raised for route errors.
  *
- * @category Constraints
+ * @category Exceptions
  * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
@@ -36,101 +36,85 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route;
+namespace miniworx\Application\Exceptions;
 
 /**
- * Base constraint class.
+ * Exception raised for route errors.
  *
  * @package MiniworX
  */
-abstract class Constraint
+class RouteException extends \Exception
 {
     /**
-     * Constraint criteria.
+     * Route path.
      *
-     * @var mixed
+     * @var array
      */
-    protected $criteria;
-
+    private $path = array();
+    
     /**
-     * Constraint type.
+     * Child exceptions.
      *
-     * @var string
+     * @var array
      */
-    protected $type;
-
-    /**
-     * Constraint validation function.
-     *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
-     */
-    abstract public function validate(&$value);
-
-    /**
-     * Configure a constraint.
-     *
-     * @param string $text The configuration.
-     * @return void Empty.
-     */
-    abstract protected function parse(string &$text);
+    private $exceptions = array();
 
     /**
      * Constructor method.
      *
-     * @param string $criteria The critera for the constraint.
+     * @param string $path The route path..
      */
-    public function __construct(string &$criteria)
+    public function __construct($path)
     {
-        $this->parse($criteria);
+        $this->path       = $path;
+        $this->exceptions = array();
     }
-    
+
     /**
-     * Coerce the filter to a string value.
+     * Returns the route path.
      *
      * @return string
      */
-    public function __toString()
+    public function path()
     {
-        return $this->type .
-            " " .
-            \miniworx\Application\Utils\Types::toString($this->criteria);
+        return '/' . implode('/', $this->path);
     }
     
     /**
-     * Return a JSON representation of the filter.
+     * Add a child exception.
+     *
+     * @param Exception $exception Child exception
+     * @return $this
+     */
+    public function addException(Exception $exception)
+    {
+        $this->exceptions[] = $exception;
+        
+        return $this;
+    }
+
+    /**
+     * Set the child exceptions.
+     *
+     * @param array $exceptions The child exceptions.
+     * @return $this
+     */
+    public function setExceptions(array $exceptions)
+    {
+        $this->exceptions = $exceptions;
+        
+        return $this;
+    }
+
+    /**
+     * Return the child exceptions.
      *
      * @return array
      */
-    public function toJson()
+    public function exceptions()
     {
-        $value = \miniworx\Application\Utils\Types::toString($this->criteria);
-        
-        return [
-            'type'  => $this->type,
-            'value' => $value
-        ];
-    }
-
-    /**
-     * Return the constraint type.
-     *
-     * @return string The constraint type.
-     */
-    public function type()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Return the constraint criteria.
-     *
-     * @return mixed The constraint criteria.
-     */
-    public function criteria()
-    {
-        return $this->criteria;
+        return $this->exceptions;
     }
 }
 
-/* Constraint.php ends here. */
+/* RouteException.php ends here. */

@@ -2,9 +2,9 @@
 /**
  * PHP version 7
  *
- * Greater-Than constraint.
+ * Base exception.
  *
- * @category Constraints
+ * @category Exceptions
  * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
@@ -36,44 +36,75 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route\Constraint;
+namespace miniworx\Application\Exceptions;
 
 /**
- * Greater-Than constraint.
+ * Base exception.
  *
  * @package MiniworX
+ * @note Ensure this matches the semantics of \Exception.
  */
-class GtConstraint extends \miniworx\Application\Route\Constraint
+class Exception extends \Exception
 {
-    /** {@inheritdoc} */
-    protected $type = 'greater-than';
+    /**
+     * JSON data.
+     *
+     * @var array
+     */
+    protected $json = array();
 
     /**
-     * Constraint validation function.
+     * Constructor method.
      *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
+     * @param string     $message  The exception message.
+     * @param int        $code     The exception code.
+     * @param \Throwable $previous The previous exception.
      */
-    public function validate(&$value)
+    public function __construct(string     $message  = "",
+                                int        $code     = 0,
+                                \Throwable $previous = null)
     {
-        return ($value > $this->criteria);
+        $this->json = array();
+
+        parent::__construct($message, $code, $previous);
     }
 
     /**
-     * Configure a constraint.
+     * Add a JSON attribute.
      *
-     * @param string $text The configuration.
-     * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
+     * @param string $key   The attribute key.
+     * @param mixed  $value The attribute value.
+     * @return $this
      */
-    protected function parse(string &$text)
+    public function addAttribute(string $key, $value)
     {
-        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
+        $this->json[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set the JSON atrributes to a given array.
+     *
+     * @param array $attributes The JSON attributes.
+     * @return $this
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->json = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Returns JSON data for this exception.
+     *
+     * @return array
+     */
+    public function getJson()
+    {
+        return $this->json;
     }
 }
 
-/* GtConstraint.php ends here. */
+/* Exception.php ends here. */

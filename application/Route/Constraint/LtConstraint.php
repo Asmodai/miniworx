@@ -44,7 +44,7 @@ namespace miniworx\Application\Route\Constraint;
  *
  * @package MiniworX
  */
-class LTConstraint extends \miniworx\Application\Route\Constraint
+class LtConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
     protected $type = 'lesser-than';
@@ -77,4 +77,4 @@ class LTConstraint extends \miniworx\Application\Route\Constraint
     }
 }
 
-/* LTConstraint.php ends here. */
+/* LtConstraint.php ends here. */

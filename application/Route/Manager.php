@@ -38,6 +38,8 @@ declare(strict_types=1);
 
 namespace miniworx\Application\Route;
 
+use \miniworx\Application\Exceptions;
+
 /**
  * Dispatch manager.
  *
@@ -47,7 +49,7 @@ class Manager
 {
     /** @var \miniworx\Application\Route\Tree Route tree. */
     private $tree = null;
-    
+
     /** @var array Array of route instances. */
     private $instances = array();
 
@@ -92,72 +94,107 @@ class Manager
     public function getMethod($request, $class)
     {
         $phpMethod = strtolower($request->method());
-        
+
+        // We hack HEAD support later on.
+        if ($phpMethod === 'head') {
+            $phpMethod = 'get';
+        }
+
         if (method_exists($class, $phpMethod)) {
             return $phpMethod;
         }
-        
+
         return false;
     }
-    
-    private function emitError($code, &$request)
+
+    /**
+     * Emit a response to the client.
+     *
+     * @param mixed                                 $output  The output.
+     * @param \miniworx\Application\Request\Request $request The request.
+     * @return bool
+     */
+    private function emit(&$output, &$request)
     {
-        http_response_code($code);
-        echo $code;
-        
-        return false;
-    }
-    
-    private function emitOk(&$output, &$request)
-    {
-        $len = 0;
         $out = $output;
-    
+
         if (!\miniworx\Application\Utils\Types::isString($output)) {
             if (is_object($output)) {
-              $out = json_encode(get_object_vars($output));
-              goto write;
+                $out = json_encode(get_object_vars($output));
+                goto write;
             }
-            
+
             $out = json_encode($output);
         }
-              
+
         write:
-        
+
         // TODO: Validation!
         foreach ($request->outputHeaders() as $key => $val) {
-            header("${key}: ${val}");
+            header($key . ':' . $val);
         }
-        
+
         http_response_code($request->status());
         header('Content-Type: application/vnd.api+json');
         header('Content-Length: ' . strlen($out));
         echo $out;
-        
+
         return true;
     }
 
-    // TODO: Handle HEAD.
+    /**
+     * Resolve a request.
+     *
+     * @param \miniworx\Application\Request\Request $request The request
+     * @return bool
+     */
     public function resolve(&$request)
     {
-        $segments = $request->uriSegments();
-        $route    = $this->tree->search($segments);
-        
-        if ($route === false) {
-          return $this->emitError(404, $request);
-        }
-        
-        $bindings = $route->bindings($segments);
-        $method   = $this->getMethod($request, $route->instance());
-        $request->setBindings($bindings);
+        try {
+            $segments = $request->uriSegments();
+            $route    = $this->tree->search($segments);
 
-        if (!$method) {
-            return $this->emitError(404, $request);
+            if ($route === false) {
+                $request->setStatus(404);
+                $msg = "404";
+                return $this->emit($msg, $request);
+            }
+
+            $bindings = $route->bindings($segments);
+            $method   = $this->getMethod($request, $route->instance());
+            $request->setBindings($bindings);
+
+            if (!$method) {
+                $request->setStatus(404);
+                $msg = "404";
+                return $this->emit($msg, $request);
+            }
+
+            $out = $route->instance()->$method($request);
+
+            if ($request->method() === 'HEAD') {
+                $out = array();
+            }
+
+            return $this->emit($out, $request);
+        } catch (Exceptions\RouteException $e) {
+            $errs = array();
+            $out  = array();
+
+            $out['path'] = $e->path();
+
+            foreach ($e->exceptions() as $ex) {
+                $errs[] = [
+                    'message' => $ex->getMessage(),
+                    'values'  => $ex->getJson()
+                ];
+            }
+
+            $out['errors'] = $errs;
+
+            $request->setStatus(500);
+            return $this->emit($out, $request);
         }
-        
-        $out = $route->instance()->$method($request);
-        
-        return $this->emitOk($out, $request);
     }
 }
 

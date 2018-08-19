@@ -38,6 +38,8 @@ declare(strict_types=1);
 
 namespace miniworx\Application\Route;
 
+use \miniworx\Application\Exceptions;
+
 /**
  * Route class.
  *
@@ -54,7 +56,7 @@ class Route
      * @var array Array of variable bindings.
      */
     private $bindings = array();
-    
+
     /**
      * @var object Target class for route.
      */
@@ -73,7 +75,7 @@ class Route
         if (isset($instance)) {
             $this->instance = $instance;
         }
-    
+
         foreach (explode('/', ltrim($path, '/')) as $fragment) {
             if (substr($fragment, 0, 1) === ':') {
                 $name = substr($fragment, 1);
@@ -92,7 +94,7 @@ class Route
             $this->path[] = $fragment;
         }
     }
-    
+
     /**
      * Returns the route's class instance.
      *
@@ -102,7 +104,7 @@ class Route
     {
         return $this->instance;
     }
-    
+
     /**
      * Returns the route's path.
      *
@@ -228,24 +230,51 @@ class Route
     {
         if (isset($groups)) {
             $result = array();
-            
+            $errors = array();
+
             $combined = array_combine($this->path, $groups);
             foreach (array_keys($this->bindings) as $key) {
                 $value = $combined[':' . $key];
 
                 if (!$this->applyFilter($value, $key)) {
-                    // TODO: Exception
-                    echo "FILTER FAILED!";
-                    return false;
+                    $obj = new Exceptions\FailedFilterException(
+                        "Filter failed for argument `:${key}'.  " .
+                        'Expected ' . $this->bindings[$key]['filter']
+                    );
+
+                    $obj->addAttribute('argument', ':' . $key)
+                        ->addAttribute(
+                            'filter',
+                            $this->bindings[$key]['filter']->toJson()
+                        );
+
+                    $errors[] = $obj;
                 }
 
                 if (!$this->applyConstraint($value, $key)) {
-                    // TODO: Exception
-                    echo "CONSTRAINT FAILED!";
-                    return false;
+                    $obj = new Exceptions\FailedConstraintException(
+                        "Constraint failed for argument `:${key}'.  " .
+                        'Expected ' . $this->bindings[$key]['constraint']
+                    );
+
+                    $obj->addAttribute('argument', ':' . $key)
+                        ->addAttribute(
+                            'constraint',
+                            $this->bindings[$key]['constraint']->toJson()
+                        );
+
+                    $errors[] = $obj;
                 }
 
                 $result[$key] = $value;
+            }
+
+            if (!empty($errors)) {
+                $exception = new Exceptions\RouteException($this->path);
+
+                $exception->setExceptions($errors);
+
+                throw $exception;
             }
 
             return $result;

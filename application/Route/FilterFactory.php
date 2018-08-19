@@ -38,6 +38,8 @@ declare(strict_types=1);
 
 namespace miniworx\Application\Route;
 
+use \miniworx\Application\Exceptions;
+
 /**
  * Filter factory class.
  *
@@ -63,7 +65,7 @@ class FilterFactory
             return new $class($type);
         }
 
-        throw new InvalidFilterException(
+        throw new Exceptions\InvalidFilterException(
             "Invalid filter type '${type}'."
         );
     }

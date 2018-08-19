@@ -43,7 +43,7 @@ namespace miniworx\Application\Route\Constraint;
  *
  * @package MiniworX
  */
-class LTEConstraint extends \miniworx\Application\Route\Constraint
+class LteConstraint extends \miniworx\Application\Route\Constraint
 {
     /** {@inheritdoc} */
     protected $type = 'lesser-than-or-equal-to';
@@ -76,4 +76,4 @@ class LTEConstraint extends \miniworx\Application\Route\Constraint
     }
 }
 
-/* LTEConstraint.php ends here. */
+/* LteConstraint.php ends here. */
