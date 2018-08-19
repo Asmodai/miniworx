@@ -35,7 +35,7 @@
  
 declare(strict_types=1);
 
-namespace miniworx;
+namespace miniworx\Application;
 
 /**
  * Bootstrap class.
@@ -53,11 +53,11 @@ class Bootstrap
     /** @var int Error reporting level. */
     private $errorReporting = 0;
 
-    /** @var int Display errors? */
-    private $displayErrors = 0;
+    /** @var string Display errors? */
+    private $displayErrors = '0';
 
-    /** @var int Display startup errors? */
-    private $displayStartupErrors = 0;
+    /** @var string Display startup errors? */
+    private $displayStartupErrors = '0';
 
     /** @var string Default time zone. */
     private $defaultTimeZone = 'UTC';
@@ -99,15 +99,15 @@ class Bootstrap
             case 'cli-server':
                 $this->debug                = true;
                 $this->errorReporting       = E_ALL;
-                $this->displayErrors        = 1;
-                $this->displayStartupErrors = 1;
+                $this->displayErrors        = '1';
+                $this->displayStartupErrors = '1';
                 break;
 
             default:
                 $this->debug                = false;
                 $this->errorReporting       = 0;
-                $this->displayErrors        = 0;
-                $this->displayStartupErrors = 0;
+                $this->displayErrors        = '0';
+                $this->displayStartupErrors = '0';
                 break;
         }
     }
@@ -180,10 +180,10 @@ class Bootstrap
      * In debug mode, this will print out the message via the SAPI handler to
      * the console.  This will be a no-op in production code.
      *
-     * @param string $message The message to display.
+     * @param mixed $message The message to display.
      * @return void Nothing.
      */
-    public function log(string $message)
+    public function log($message)
     {
         if ($this->debug) {
             error_log('DEBUG:' . $message, 4);
@@ -197,11 +197,11 @@ class Bootstrap
      */
     public function run()
     {
-        $this->application = new Application();
+        $this->application = new Application($this);
 
         $this->application->run();
     }
-
+    
     /**
      * Returns the current application object.
      *

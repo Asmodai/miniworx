@@ -2,15 +2,15 @@
 /**
  * PHP version 7
  *
- * Interface for routable things.
+ * Server version route.
  *
- * @category Classes
- * @package Classes
+ * @category VersionRoute
+ * @package Routes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://www.github.com/...
+ * @link https://github.com/vivi90/miniworx
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -36,21 +36,36 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route;
+namespace miniworx\Routes;
 
-/**
- * Interface for routable things.
- *
- * @package Vendor/Project
- */
-interface RoutableInterface
+class Version implements \miniworx\Application\Route\RoutableInterface
 {
     /**
-     * The path of a route.
+     * Return the route path.
      *
-     * @return string The path.
+     * @return string
      */
-    public function route();
+    public function route()
+    {
+        return "/version";
+    }
+
+    /**
+     * Handle the HTTP `GET` verb for this route.
+     *
+     * @param \miniworx\Application\Request\Request $request The request.
+     * @return array
+     */
+    public function get(&$request)
+    {
+        $result = [
+            'version' => \miniworx\Application\Version::instance()->version(),
+        ];
+
+        $request->ok();
+
+        return $result;
+    }
 }
 
-/* RoutableInterface.php ends here. */
+/* Version.php ends here. */

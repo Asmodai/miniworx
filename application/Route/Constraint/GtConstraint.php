@@ -2,15 +2,15 @@
 /**
  * PHP version 7
  *
- * Interface for routable things.
+ * Greater-Than constraint.
  *
- * @category Classes
- * @package Classes
+ * @category Constraints
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://www.github.com/...
+ * @link https://github.com/vivi90/miniworx
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -36,21 +36,44 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route;
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Interface for routable things.
+ * Greater-Than constraint.
  *
- * @package Vendor/Project
+ * @package MiniworX
  */
-interface RoutableInterface
+class GTConstraint extends \miniworx\Application\Route\Constraint
 {
+    /** {@inheritdoc} */
+    protected $type = 'greater-than';
+
     /**
-     * The path of a route.
+     * Constraint validation function.
      *
-     * @return string The path.
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
      */
-    public function route();
+    public function validate(&$value)
+    {
+        return ($value > $this->criteria);
+    }
+
+    /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
+     */
+    protected function parse(string &$text)
+    {
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
+            $text,
+            TYPE_INTEGER
+        );
+    }
 }
 
-/* RoutableInterface.php ends here. */
+/* GTConstraint.php ends here. */

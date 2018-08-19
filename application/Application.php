@@ -36,7 +36,7 @@
  
 declare(strict_types=1);
 
-namespace miniworx;
+namespace miniworx\Application;
 
 /**
  * Application class.
@@ -45,15 +45,31 @@ namespace miniworx;
  */
 class Application
 {
-    public $routeManager = null;
+    /**
+     * The route manager object.
+     *
+     * @var \miniworx\Application\Route\Manager
+     */
+    private $routeManager = null;
+    
+    /**
+     * The object that bootstrapped the application.
+     *
+     * @var \miniworx\Application\Bootstrap
+     */
+    private $bootstrap = null;
 
     /**
      * Constructor method.
+     *
+     * @param Application\Bootstrap $bootstrap The bootstrap object.
      */
-    public function __construct()
-    {
-        $this->setup();
+    public function __construct(&$bootstrap)
+    {        
+        $this->bootstrap    = $bootstrap;
         $this->routeManager = new \miniworx\Application\Route\Manager();
+        
+        $this->setup();
     }
 
     /**
@@ -73,8 +89,19 @@ class Application
      */
     public function run()
     {
-        $request = new Application\Request\Request();
+        $request = new Request\Request();
         $this->routeManager->resolve($request);
+    }
+    
+    /**
+     * Print a message to the log in debug mode.
+     *
+     * @param mixed $message The message to print.
+     * @return void Nothing.
+     */
+    public function log($message)
+    {
+        $this->bootstrap->log($message);
     }
 }
 

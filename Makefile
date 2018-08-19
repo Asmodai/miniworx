@@ -47,8 +47,10 @@ PHPCS       = `pwd`/vendor/bin/phpcs
 PHPMD       = `pwd`/vendor/bin/phpmd
 PHPMETRICS  = `pwd`/vendor/bin/phpmetrics
 PHPDOC      = `pwd`/vendor/bin/phpdoc
+APIDOC      = `pwd`/node_modules/apidoc/bin/apidoc
 
-SUBDIRS = application routes public
+ROUTESDIR = routes
+SUBDIRS   = application routes public
 
 MINIWORX_METRICS = doc/metrics/miniworx.html
 PUBLIC_METRICS   = doc/metrics/public.html
@@ -61,8 +63,10 @@ all: help
 
 help:
 	@echo 'Valid targets are:'
+	@echo '   autoload    -- Regenerate autoloader.   [requires composer]'
 	@echo '   deps        -- Make dependencies.       [requires composer]'
 	@echo '   doc         -- Make documentation.      [requires phpdoc]'
+	@echo '   apidoc      -- Make API documentation.  [requires apidoc]'
 	@echo '   metrics     -- Make metrics report.     [requires phpmetrics]'
 	@echo '   profile     -- Profile the code.        [requires XDebug]'
 	@echo '   check       -- Check code sanity.       [requires phpcs]'
@@ -91,19 +95,28 @@ clean:
 php-version:
 	@$(PHP) --version
 
+autoload:
+	@echo 'Updating autoloader.'
+	@composer dump-autoload
+
 deps:
 	@echo 'Updating/installing dependencies.'
+	@npm install apidoc
 	@composer update
 	@composer install
 
 doc: $(SUBDIRS)
 	@echo 'Running phpdoc.'
-	@$(PHPDOC) -d `echo '$?' | sed -e 's/ /,/g'` \
-	 -t doc/phpdoc
+	@$(PHPDOC) -d `echo '$?' | sed -e 's/ /,/g'` -t doc/phpdoc
+
+apidoc:
+	@echo 'Running apidoc'
+	@$(APIDOC) -i $(ROUTESDIR) -o doc/apidoc
 
 metrics:
 	@echo 'Running PHP Metrics.'
-	@$(PHPMETRICS) --report-html=$(MINIWORX_METRICS) -- miniworx
+	@$(PHPMETRICS) --report-html=$(MINIWORX_METRICS) -- application
+	@$(PHPMETRICS) --report-html=$(PUBLIC_METRICS)   -- routes
 	@$(PHPMETRICS) --report-html=$(PUBLIC_METRICS)   -- public
 
 mess: $(SUBDIRS)

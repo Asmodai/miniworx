@@ -136,7 +136,7 @@ class Manager
         
         return true;
     }
-    
+
     // TODO: Handle HEAD.
     public function resolve(&$request)
     {

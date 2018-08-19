@@ -2,15 +2,15 @@
 /**
  * PHP version 7
  *
- * Base constraint class.
+ * Version information.
  *
- * @category Constraints
- * @package MiniworX
+ * @category Classes
+ * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://github.com/vivi90/miniworx
+ * @link https://www.github.com/...
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -34,68 +34,88 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
-namespace miniworx\Application\Route;
+namespace miniworx\Application;
 
 /**
- * Base constraint class.
+ * Version information.
  *
  * @package MiniworX
  */
-abstract class Constraint
+final class Version
 {
-    /** @var mixed Constraint criteria. */
-    protected $criteria;
-
-    /** @var string Constraint type. */
-    protected $type;
+    /**
+     * Major version number.
+     */
+    const MAJOR_VERSION = 0;
 
     /**
-     * Constraint validation function.
-     *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
+     * Minor version number.
      */
-    abstract public function validate(&$value);
+    const MINOR_VERSION = 1;
 
     /**
-     * Configure a constraint.
-     *
-     * @param string $text The configuration.
-     * @return void Empty.
+     * Patch version number.
      */
-    abstract protected function parse(string &$text);
+    const PATCH_VERSION = 0;
 
     /**
-     * Constructor method.
-     *
-     * @param string $criteria The critera for the constraint.
+     * Private constructor.
      */
-    public function __construct(string &$criteria)
+    private function __construct()
     {
-        $this->parse($criteria);
     }
 
     /**
-     * Return the constraint type.
+     * Returns the singleton instance for this class.
      *
-     * @return string The constraint type.
+     * @return Version
      */
-    public function type()
+    public static function instance()
     {
-        return $this->type;
+        static $inst = null;
+
+        if ($inst === null) {
+            $inst = new Version();
+        }
+
+        return $inst;
     }
 
     /**
-     * Return the constraint criteria.
+     * Return the current version number as an array.
      *
-     * @return mixed The constraint criteria.
+     * @return array An array.
      */
-    public function criteria()
+    public function version()
     {
-        return $this->criteria;
+        static $version = null;
+
+        if ($version === null) {
+            $version = [
+                'major' => self::MAJOR_VERSION,
+                'minor' => self::MINOR_VERSION,
+                'patch' => self::PATCH_VERSION
+            ];
+        }
+
+        return $version;
+    }
+
+    /**
+     * Return the current version number as a string.
+     *
+     * @return string A string.
+     */
+    public function __toString()
+    {
+        static $str = null;
+
+        if ($str === null) {
+            $str = implode('.', $this->version());
+        }
+
+        return $str;
     }
 }
 
-/* Constraint.php ends here. */
+/* Version.php ends here. */

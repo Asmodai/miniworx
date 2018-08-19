@@ -17,6 +17,7 @@ callgrind.*
 
 # Generated documentation
 /doc/phpdoc/
+/doc/apidoc/
 
 # SQL
 database.sql
@@ -24,3 +25,5 @@ database.sql
 # macOS noise
 .DS_Store
 
+# npm noise
+node_modules

@@ -2,9 +2,9 @@
 /**
  * PHP version 7
  *
- * Exception raised for invalid constraints.
+ * Lesser-Than-Or-Equal-To constraint.
  *
- * @category Route
+ * @category Constraints
  * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
@@ -35,16 +35,45 @@
  */
 
 declare(strict_types=1);
- 
-namespace miniworx\Application\Route;
+
+namespace miniworx\Application\Route\Constraint;
 
 /**
- * Exception raised for invalid constraints.
+ * Lesser-Than-Or-Equal-To constraint.
  *
  * @package MiniworX
  */
-class InvalidConstraintException extends \Exception
+class LTEConstraint extends \miniworx\Application\Route\Constraint
 {
+    /** {@inheritdoc} */
+    protected $type = 'lesser-than-or-equal-to';
+
+    /**
+     * Constraint validation function.
+     *
+     * @param mixed $value The value to validate against the constraint.
+     * @return boolean True if the constraint is validated; otherwise false.
+     */
+    public function validate(&$value)
+    {
+        return ($value <= $this->criteria);
+    }
+
+    /**
+     * Configure a constraint.
+     *
+     * @param string $text The configuration.
+     * @return void Empty.
+     *
+     * @SuppressWarnings(StaticAccess)
+     */
+    protected function parse(string &$text)
+    {
+        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
+            $text,
+            TYPE_INTEGER
+        );
+    }
 }
 
-/* InvalidConstraintException.php ends here. */
+/* LTEConstraint.php ends here. */

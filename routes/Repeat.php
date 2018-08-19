@@ -2,10 +2,10 @@
 /**
  * PHP version 7
  *
- * Lesser-Than-Or-Equal-To constraint.
+ * An example route.
  *
- * @category Constraints
- * @package MiniworX
+ * @category RepeatRoute
+ * @package Routes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
@@ -35,45 +35,42 @@
  */
 
 declare(strict_types=1);
- 
-namespace miniworx\Application\Route\Constraint;
+
+namespace miniworx\Routes;
 
 /**
- * Lesser-Than-Or-Equal-To constraint.
+ * An example route.
  *
- * @package MiniworX
+ * @package Vendor/Project
  */
-class LTEConstraint extends \miniworx\Application\Route\Constraint
+class Repeat implements \miniworx\Application\Route\RoutableInterface
 {
-    /** {@inheritdoc} */
-    protected $type = 'lesser-than-or-equal-to';
 
     /**
-     * Constraint validation function.
+     * Return the route path.
      *
-     * @param mixed $value The value to validate against the constraint.
-     * @return boolean True if the constraint is validated; otherwise false.
+     * @return string
      */
-    public function validate(&$value)
+    public function route()
     {
-        return ($value <= $this->criteria);
+        return "/repeat";
     }
 
     /**
-     * Configure a constraint.
+     * Handle the HTTP `GET` verb for this route.
      *
-     * @param string $text The configuration.
-     * @return void Empty.
-     *
-     * @SuppressWarnings(StaticAccess)
+     * @param \miniworx\Application\Request\Request $request The request.
+     * @return array
      */
-    protected function parse(string &$text)
+    public function get(&$request)
     {
-        $this->criteria = \miniworx\Application\Utils\Types::toNumber(
-            $text,
-            TYPE_INTEGER
-        );
+        $request->ok;
+        return [
+            'data' => [
+                'request' => $request->expose()
+            ]
+        ];
     }
 }
 
-/* LTEConstraint.php ends here. */
+/* Repeat.php ends here. */
