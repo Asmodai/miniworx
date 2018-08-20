@@ -55,7 +55,7 @@ class Version implements Interfaces\RouteInterface
      */
     public function route(): string
     {
-        return '/version/';
+        return '/version';
     }
 
     /**
