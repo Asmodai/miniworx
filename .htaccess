@@ -5,8 +5,8 @@ RewriteRule ^public/ - [L]
 
 # Static resources if they exist
 RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
-RewriteRule (.+) public/$1 [L]
+RewriteRule api/(.+) public/$1 [L]
 
 # Route all other requests
-RewriteRule (.*) public/index.php [L]
+RewriteRule api/(.*) public/index.php [L]
 

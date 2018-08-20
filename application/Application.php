@@ -58,6 +58,13 @@ class Application
      * @var \miniworx\Application\Bootstrap
      */
     private $bootstrap = null;
+    
+    /**
+     * Application settings.
+     *
+     * @var array
+     */
+    private $settings = array();
 
     /**
      * Constructor method.
@@ -85,12 +92,39 @@ class Application
     /**
      * Starts the application.
      *
-     * @return void Nothing
+     * @return $this
      */
     public function run()
     {
-        $request = new Request\Request();
+        $request = new Request\Request($this);
         $this->routeManager->resolve($request);
+        
+        return $this;
+    }
+    
+    /**
+     * Sets the API path prefix.
+     *
+     * @param string $prefix The API path prefix.
+     * @return $this
+     */
+    public function setPathPrefix(string $prefix)
+    {
+        $this->settings['path_prefix'] = $prefix;
+        
+        return $this;
+    }
+    
+    /**
+     * Returns the API path prefix.
+     *
+     * @return string
+     */
+    public function pathPrefix(): string
+    {
+        return isset($this->settings['path_prefix'])
+            ? $this->settings['path_prefix']
+            : '';
     }
     
     /**

@@ -48,12 +48,19 @@ use \miniworx\Application\Exceptions;
 class Request
 {
     /**
+     * The parent application object.
+     *
+     * @var \miniworx\Application\Application
+     */
+    private $application = null;
+
+    /**
      * Variable bindings.
      *
      * @var array
      */
     private $bindings = array();
-    
+
     /**
      * Request body.
      *
@@ -67,21 +74,21 @@ class Request
      * @var array
      */
     private $cookies = array();
-    
+
     /**
      * Server headers.
      *
      * @var array
      */
-    private $headers = array();    
-    
+    private $headers = array();
+
     /**
      * Output headers.
      *
      * @var array
      */
     private $outputHeaders = array();
-    
+
     /**
      * Request method.
      *
@@ -95,28 +102,28 @@ class Request
      * @var array
      */
     private $params = array();
-    
+
     /**
      * Transport protocol (HTTP, HTTPS et al).
      *
      * @var string
      */
     private $protocol = null;
-   
+
     /**
      * The URI in array form.
      *
      * @var array
      */
     private $segments = array();
-    
+
     /**
      * The path and parameters URI components.
      *
      * @var string
      */
     private $uri = null;
-    
+
     /**
      * HTTP status code.
      *
@@ -127,7 +134,7 @@ class Request
     /**
      * Cloning disabled.
      *
-     * @return void Nothing.
+     * @return void
      *
      * @SuppressWarnings(UnusedPrivateMethod)
      */
@@ -138,36 +145,39 @@ class Request
     /**
      * Serialisation disabled.
      *
-     * @return void Nada.
+     * @return void
      *
      * @SuppressWarnings(UnusedPrivateMethod)
      */
-    private function __sleep()
+    private function __sleep(): void
     {
     }
 
     /**
      * Deserialisation disabled.
      *
-     * @return void Zilch.
+     * @return void
      *
      * @SuppressWarnings(UnusedPrivateMethod)
      */
-    private function __wakeup()
+    private function __wakeup(): void
     {
     }
 
     /**
      * Constructor method.
      *
+     * @param \miniworx\Application\Application $app The parent application.
+     *
      * @SuppressWarnings(SuperGlobals)
      * @SuppressWarnings(StaticAccess)
      */
-    public function __construct()
+    public function __construct(\miniworx\Application\Application $app = null)
     {
-        $this->uri      = $_SERVER['REQUEST_URI'];
-        $this->protocol = getenv('SERVER_PROTOCOL');
-        
+        $this->application = $app;
+        $this->uri         = $_SERVER['REQUEST_URI'];
+        $this->protocol    = getenv('SERVER_PROTOCOL');
+
         $this->validateRequestMethod($_SERVER['REQUEST_METHOD']);
         $this->setPostParameters();
         $this->setCookieParameters();
@@ -184,7 +194,7 @@ class Request
      *
      * @return array An array of key/value pairs.
      */
-    public function expose()
+    public function expose(): array
     {
         return [
             'bindings' => $this->bindings,
@@ -197,13 +207,13 @@ class Request
             'uri'      => $this->uri
         ];
     }
-    
+
     /**
      * Returns the request URI.
      *
      * @return string The request URI.
      */
-    public function uri()
+    public function uri(): string
     {
         return $this->uri;
     }
@@ -213,7 +223,7 @@ class Request
      *
      * @return array An array containing the URI path segments.
      */
-    public function uriSegments()
+    public function uriSegments(): array
     {
         return $this->segments;
     }
@@ -223,7 +233,7 @@ class Request
      *
      * @return string The request method.
      */
-    public function method()
+    public function method(): string
     {
         return $this->method;
     }
@@ -233,28 +243,30 @@ class Request
      *
      * @return array The request body.
      */
-    public function body()
+    public function body(): array
     {
         return $this->body;
     }
-    
+
     /**
      * Set variable bindings forr this request.
      *
      * @param array $bindings An array of key/value binding pairs.
-     * @return void Nothing.
+     * @return Request
      */
-    public function setBindings(&$bindings)
+    public function setBindings(&$bindings): Request
     {
         $this->bindings = $bindings;
+
+        return $this;
     }
-    
+
     /**
      * Get variable bindings for this request.
      *
      * @return array An array of key/value binding pairs.
      */
-    public function bindings()
+    public function bindings(): array
     {
         return $this->bindings;
     }
@@ -264,40 +276,59 @@ class Request
      *
      * @param string $header The header name.
      * @param mixed  $value  The header value.
-     * @return void Nothing.
+     * @return Request
      */
-    public function addHeader($header, $value)
+    public function addHeader($header, $value): Request
     {
         $this->outputHeaders[$header] = $value;
+
+        return $this;
     }
-    
+
     /**
      * Return the output headers for this request.
      *
      * @return array The array of key/value header pairs.
      */
-    public function outputHeaders()
+    public function outputHeaders(): array
     {
         return $this->outputHeaders;
+    }
+
+    /**
+     * Remove the application's path prefix from the URI.
+     *
+     * @param string $path The URI from which the prefix is removed.
+     * @return string
+     */
+    private function removePrefix($path): string
+    {
+        $prefix = $this->application->pathPrefix();
+
+        if (empty($prefix)) {
+            return $path;
+        }
+
+        return str_replace($prefix, '', $path);
     }
 
     /**
      * Parses the URI into both an array of path segments and an array of
      * parameters.
      *
-     * @return void Side effects, baby!
+     * @return void
      *
      * @SuppressWarnings(StaticAccess);
      */
-    private function explodeUri()
+    private function explodeUri(): void
     {
         if (!isset($this->uri)) {
             return;
         }
 
-        $split          = explode('?', $this->uri);
+        $path           = $this->removePrefix($this->uri);
+        $split          = explode('?', $path);
         $this->segments = explode('/', rtrim(ltrim($split[0], '/'), '/'));
-        $this->uri      = $split[0];
 
         if (isset($split[1])) {
             $list = explode('&', $split[1]);
@@ -319,9 +350,9 @@ class Request
      * Validate a request method.
      *
      * @param string $input The method to validate.
-     * @return void We love side effects.
+     * @return void
      */
-    private function validateRequestMethod(string &$input)
+    private function validateRequestMethod(string &$input): void
     {
         static $methods;
 
@@ -353,9 +384,9 @@ class Request
      * `HTTP_POST` environment variable, which should be a list of parameters
      * in the form `var1=value1&varN=valueN&...`.
      *
-     * @return void Side effects are great.
+     * @return void
      */
-    private function setPostParameters()
+    private function setPostParameters(): void
     {
         $params = filter_input_array(INPUT_POST);
 
@@ -370,9 +401,9 @@ class Request
     /**
      * Set cookie data.
      *
-     * @return void Side effects are great.
+     * @return void
      */
-    private function setCookieParameters()
+    private function setCookieParameters(): void
     {
         $params = filter_input_array(INPUT_COOKIE);
 
@@ -383,26 +414,28 @@ class Request
 
         $this->cookies = $params;
     }
-    
+
     /**
      * Get request headers.
      *
-     * @return void Uses side effects.
+     * @return void
      */
-    private function getHeaders()
+    private function getHeaders(): void
     {
         $this->headers = apache_request_headers();
     }
-    
+
     /**
      * Set the request's HTTP status code.
      *
      * @param int $code The HTTP status code to set.
-     * @return int The requested HTTP status code.
+     * @return Request
      */
-    public function setStatus($code)
+    public function setStatus($code): Request
     {
-        return ($this->status = $code);
+        $this->status = $code;
+
+        return $this;
     }
 
     /**
@@ -410,9 +443,24 @@ class Request
      *
      * @return int The request's HTTP status code.
      */
-    public function status()
+    public function status(): int
     {
         return $this->status;
+    }
+
+    /**
+     * Print a message to the log in debug mode.
+     *
+     * @param mixed $message The message to print.
+     * @return Request
+     */
+    public function log($message): Request
+    {
+        if (isset($this->application)) {
+            $this->application->log($message);
+        }
+
+        return $this;
     }
 }
 

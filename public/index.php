@@ -33,13 +33,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
- 
+
 declare(strict_types=1);
 
 namespace miniworx;
 
 require __DIR__ . '/../application/Bootstrap.php';
 
-(new \miniworx\Application\Bootstrap())->run();
+(new \miniworx\Application\Bootstrap())->application()
+    ->setPathPrefix('/api')
+    ->run();
 
 /* index.php ends here. */

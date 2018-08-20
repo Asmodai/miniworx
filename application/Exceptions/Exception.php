@@ -42,7 +42,6 @@ namespace miniworx\Application\Exceptions;
  * Base exception.
  *
  * @package MiniworX
- * @note Ensure this matches the semantics of \Exception.
  */
 class Exception extends \Exception
 {
@@ -56,17 +55,88 @@ class Exception extends \Exception
     /**
      * Constructor method.
      *
-     * @param string     $message  The exception message.
-     * @param int        $code     The exception code.
-     * @param \Throwable $previous The previous exception.
+     * @param int    $status The HTTP status code.
+     * @param string $title  The error title.
+     * @param string $detail The error detail.
+     * @param int    $code   The application-specific error code.
      */
-    public function __construct(string     $message  = "",
-                                int        $code     = 0,
-                                \Throwable $previous = null)
+    public function __construct(int    $status = 500,
+                                string $title  = "",
+                                string $detail = "",
+                                int    $code   = 0)
     {
+        parent::__construct($detail, $code);
+
         $this->json = array();
 
-        parent::__construct($message, $code, $previous);
+        $this->json['status'] = $status;
+        $this->json['title']  = $title;
+        $this->json['detail'] = $detail;
+
+        if ($code !== 0) {
+            $this->json['code'] = $code;
+        }
+    }
+
+    /**
+     * Set the exception title.
+     *
+     * @param string $title The exception title.
+     * @return Exception
+     */
+    public function setTitle(string $title)
+    {
+        $this->json['title'] = $title;
+
+        return $this;
+    }
+
+    /**
+     * Set the exception detail.
+     *
+     * @param string $detail The exception detail.
+     * @return Exception
+     */
+    public function setDetail(string $detail)
+    {
+        $this->json['detail'] = $detail;
+        $this->message        = $detail;
+
+        return $this;
+    }
+
+    /**
+     * Set the exception code.
+     *
+     * @param int $code The exception code.
+     * @return Exception
+     */
+    public function setCode(int $code)
+    {
+        $this->json['code'] = $code;
+        $this->code         = $code;
+
+        return $this;
+    }
+
+    /**
+     * Returns the exception's HTTP status code.
+     *
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->json['status'];
+    }
+
+    /**
+     * Returns the exception's title.
+     *
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->json['title'];
     }
 
     /**
@@ -74,7 +144,7 @@ class Exception extends \Exception
      *
      * @param string $key   The attribute key.
      * @param mixed  $value The attribute value.
-     * @return $this
+     * @return Exception
      */
     public function addAttribute(string $key, $value)
     {
@@ -84,14 +154,68 @@ class Exception extends \Exception
     }
 
     /**
-     * Set the JSON atrributes to a given array.
+     * Add a JSON attribute to the exception's 'source' array.
      *
-     * @param array $attributes The JSON attributes.
-     * @return $this
+     * @param string $key   The attribute key.
+     * @param mixed  $value The attribute value.
+     * @return Exception
      */
-    public function setAttributes(array $attributes)
+    public function addSourceAttribute(string $key, $value)
     {
-        $this->json = $attributes;
+        if (!isset($this->json['source'])) {
+            $this->json['source'] = array();
+        }
+
+        $this->json['source'][$key] = $value;
+    }
+
+    /**
+     * Set the error source parameter.
+     *
+     * @param string $param The source parameter.
+     * @return Exception
+     */
+    public function setSourceParameter(string $param)
+    {
+        if (!isset($this->json['source'])) {
+            $this->json['source'] = array();
+        }
+
+        $this->json['source']['parameter'] = $param;
+
+        return $this;
+    }
+
+    /**
+     * Set the error source path.
+     *
+     * @param string $path The source path.
+     * @return Exception
+     */
+    public function setSourcePath(string $path)
+    {
+        if (!isset($this->json['source'])) {
+            $this->json['source'] = array();
+        }
+
+        $this->json['source']['path'] = $path;
+
+        return $this;
+    }
+
+    /**
+     * Set the error source pointer.
+     *
+     * @param string $pointer The source pointer.
+     * @return Exception
+     */
+    public function setSourcePointer(string $pointer)
+    {
+        if (!isset($this->json['source'])) {
+            $this->json['source'] = array();
+        }
+
+        $this->json['source']['pointer'] = $pointer;
 
         return $this;
     }

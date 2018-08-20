@@ -39,19 +39,21 @@ declare(strict_types=1);
 
 namespace miniworx\Routes;
 
+use \miniworx\Application\Interfaces;
+
 /**
  * An example route that repeats the request as the response.
  *
  * @package MiniworX
  */
-class Repeat implements \miniworx\Application\Route\RoutableInterface
+class Repeat implements Interfaces\RouteInterface
 {
     /**
      * Return the route path.
      *
      * @return string
      */
-    public function route()
+    public function route(): string
     {
         return "/repeat";
     }

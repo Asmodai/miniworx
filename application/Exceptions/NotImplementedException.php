@@ -2,10 +2,10 @@
 /**
  * PHP version 7
  *
- * Server version route.
+ * Not Implemented exception.
  *
- * @category VersionRoute
- * @package Routes
+ * @category Exceptions
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
@@ -36,63 +36,44 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Routes;
-
-use \miniworx\Application\Interfaces;
-use \miniworx\Application\Document;
+namespace miniworx\Application\Exceptions;
 
 /**
- * REST server version route.
+ * Not Implemented exception.
  *
  * @package MiniworX
  */
-class Version implements Interfaces\RouteInterface
+class NotImplementedException extends Exception
 {
     /**
-     * Return the route path.
+     * Constructor method.
      *
-     * @return string
+     * @param string $title  The error title.
+     * @param string $detail The error detail.
+     * @param int    $code   The application-specific error code.
      */
-    public function route(): string
+    public function __construct(string $title  = 'Not Implemented',
+                                string $detail = 'Not Implemented',
+                                int    $code   = 0)
     {
-        return '/version/';
+        parent::__construct(501,
+                            $title,
+                            $detail,
+                            $code);
     }
 
     /**
-     * Handle the HTTP `GET` verb for this route.
+     * Set the error source method.
      *
-     * @param \miniworx\Application\Request\Request $request The request.
-     * @return array
+     * @param string $method The source method.
+     * @return NotImplementedException
      */
-    public function get(&$request)
+    public function setSourceMethod(string $method)
     {
-        /**
-         * @api {get} /version
-         * @apiName GetVersion
-         * @apiGroup Version
-         *
-         * @apiDescription Returns the current version of the MiniworX RESTful
-         *                 server.
-         *
-         * @apiSuccess {Array} version Version number data.
-         * @apiSuccessExample Success-Response:
-         *    HTTP/1.1 200 OK
-         *    {
-         *      "version": {
-         *        "major": 0,
-         *        "minor": 1,
-         *        "patch": 0
-         *      }
-         *    }
-         */
-        $result = [
-            'version' => \miniworx\Application\Version::instance()->version(),
-        ];
+        $this->json['source']['method'] = strtoupper($method);
 
-        $request->setStatus(200);
-
-        return new Document\Document($result);
+        return $this;
     }
 }
 
-/* Version.php ends here. */
+/* NotImplementedException.php ends here. */

@@ -45,6 +45,19 @@ namespace miniworx\Application\Exceptions;
  */
 class FailedConstraintException extends Exception
 {
+    /**
+     * Constructor method.
+     *
+     * @param string $title  The error title.
+     * @param string $detail The error detail.
+     */
+    public function __construct(string $title  = 'Failed Constraint',
+                                string $detail = 'Failed Constraint')
+    {
+        parent::__construct(400,
+                            $title,
+                            $detail);
+    }
 }
 
 /* FailedConstraintException.php ends here. */

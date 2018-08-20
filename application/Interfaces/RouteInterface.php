@@ -2,10 +2,10 @@
 /**
  * PHP version 7
  *
- * Server version route.
+ * Interface for routable things.
  *
- * @category VersionRoute
- * @package Routes
+ * @category Interfaces
+ * @package Classes
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
@@ -36,63 +36,21 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Routes;
-
-use \miniworx\Application\Interfaces;
-use \miniworx\Application\Document;
+namespace miniworx\Application\Interfaces;
 
 /**
- * REST server version route.
+ * Interface for routable things.
  *
  * @package MiniworX
  */
-class Version implements Interfaces\RouteInterface
+interface RouteInterface
 {
     /**
-     * Return the route path.
+     * The path of a route.
      *
-     * @return string
+     * @return string The path.
      */
-    public function route(): string
-    {
-        return '/version/';
-    }
-
-    /**
-     * Handle the HTTP `GET` verb for this route.
-     *
-     * @param \miniworx\Application\Request\Request $request The request.
-     * @return array
-     */
-    public function get(&$request)
-    {
-        /**
-         * @api {get} /version
-         * @apiName GetVersion
-         * @apiGroup Version
-         *
-         * @apiDescription Returns the current version of the MiniworX RESTful
-         *                 server.
-         *
-         * @apiSuccess {Array} version Version number data.
-         * @apiSuccessExample Success-Response:
-         *    HTTP/1.1 200 OK
-         *    {
-         *      "version": {
-         *        "major": 0,
-         *        "minor": 1,
-         *        "patch": 0
-         *      }
-         *    }
-         */
-        $result = [
-            'version' => \miniworx\Application\Version::instance()->version(),
-        ];
-
-        $request->setStatus(200);
-
-        return new Document\Document($result);
-    }
+    public function route(): string;
 }
 
-/* Version.php ends here. */
+/* RoutableInterface.php ends here. */

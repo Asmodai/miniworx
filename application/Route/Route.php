@@ -238,12 +238,13 @@ class Route
 
                 if (!$this->applyFilter($value, $key)) {
                     $obj = new Exceptions\FailedFilterException(
+                        'Failed Filter',
                         "Filter failed for argument `:${key}'.  " .
                         'Expected ' . $this->bindings[$key]['filter']
                     );
 
-                    $obj->addAttribute('argument', ':' . $key)
-                        ->addAttribute(
+                    $obj->setSourceParameter(':' . $key)
+                        ->addSourceAttribute(
                             'filter',
                             $this->bindings[$key]['filter']->toJson()
                         );
@@ -253,12 +254,13 @@ class Route
 
                 if (!$this->applyConstraint($value, $key)) {
                     $obj = new Exceptions\FailedConstraintException(
+                        'Failed Constraint',
                         "Constraint failed for argument `:${key}'.  " .
                         'Expected ' . $this->bindings[$key]['constraint']
                     );
 
-                    $obj->addAttribute('argument', ':' . $key)
-                        ->addAttribute(
+                    $obj->setSourceParameter(':' . $key)
+                        ->addSourceAttribute(
                             'constraint',
                             $this->bindings[$key]['constraint']->toJson()
                         );

@@ -2,15 +2,15 @@
 /**
  * PHP version 7
  *
- * Interface for routable things.
+ * 404 Not Found exception.
  *
- * @category Classes
- * @package Classes
+ * @category Exceptions
+ * @package MiniworX
  * @author Paul Ward <asmodai@gmail.com>
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://www.github.com/...
+ * @link https://github.com/vivi90/miniworx
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -36,21 +36,31 @@
 
 declare(strict_types=1);
 
-namespace miniworx\Application\Route;
+namespace miniworx\Application\Exceptions;
 
 /**
- * Interface for routable things.
+ * 404 Not Found exception.
  *
- * @package Vendor/Project
+ * @package MiniworX
  */
-interface RoutableInterface
+class NotFoundException extends Exception
 {
     /**
-     * The path of a route.
+     * Constructor method.
      *
-     * @return string The path.
+     * @param string $title  The error title.
+     * @param string $detail The error detail.
+     * @param int    $code   The application-specific error code.
      */
-    public function route();
+    public function __construct(string $title  = 'Not Found',
+                                string $detail = 'Not Found',
+                                int    $code   = 0)
+    {
+        parent::__construct(404,
+                            $title,
+                            $detail,
+                            $code);
+    }
 }
 
-/* RoutableInterface.php ends here. */
+/* NotFoundException.php ends here. */

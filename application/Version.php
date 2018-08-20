@@ -10,7 +10,7 @@
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://www.github.com/...
+ * @link https://github.com/vivi90/miniworx
  */
 /*
  * Permission is hereby granted, free of charge, to any person

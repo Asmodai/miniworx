@@ -53,6 +53,7 @@ ROUTESDIR = routes
 SUBDIRS   = application routes public
 
 MINIWORX_METRICS = doc/metrics/miniworx.html
+ROUTES_METRICS   = doc/metrics/routes.html
 PUBLIC_METRICS   = doc/metrics/public.html
 
 HTTP_PORT = 8080
@@ -71,6 +72,7 @@ help:
 	@echo '   profile     -- Profile the code.        [requires XDebug]'
 	@echo '   check       -- Check code sanity.       [requires phpcs]'
 	@echo '   mess        -- Check code quality.      [requires phpmd]'
+	@echo '   release     -- build a release          [requires composer]'
 	@echo '   help        -- Show this message.       [requires eyesight]'
 	@echo '   tools       -- Show tool locations.'
 	@echo '   php-version -- See which version of PHP is used by Make.'
@@ -86,11 +88,13 @@ tools:
 	@echo "   phpmd:      $(PHPMD)"
 	@echo "   phpmetrics: $(PHPMETRICS)"
 	@echo "   phpdoc:     $(PHPDOC)"
+	@echo "   apidoc:     $(APIDOC)"
 
 clean:
 	@echo 'Cleaning junk.'
 	-rm -rf doc/metrics
 	-rm -rf doc/phpdoc
+	-rm -rf doc/apidoc
 
 php-version:
 	@$(PHP) --version
@@ -105,6 +109,11 @@ deps:
 	@composer update
 	@composer install
 
+release:
+	@echo 'Building a release.'
+	@composer install --no-dev
+	@composer dump-autoload
+
 doc: $(SUBDIRS)
 	@echo 'Running phpdoc.'
 	@$(PHPDOC) -d `echo '$?' | sed -e 's/ /,/g'` -t doc/phpdoc
@@ -116,14 +125,14 @@ apidoc:
 metrics:
 	@echo 'Running PHP Metrics.'
 	@$(PHPMETRICS) --report-html=$(MINIWORX_METRICS) -- application
-	@$(PHPMETRICS) --report-html=$(PUBLIC_METRICS)   -- routes
+	@$(PHPMETRICS) --report-html=$(ROUTES_METRICS)   -- routes
 	@$(PHPMETRICS) --report-html=$(PUBLIC_METRICS)   -- public
 
 mess: $(SUBDIRS)
 	@echo 'Running PHP Multi-Detect.'
-	@$(PHPMD) `echo '$?' | sed -e 's/ /,/g'`                             \
-	          text                                                       \
-	          cleancode,codesize,controversial,design,naming,unusedcode  \
+	@$(PHPMD) `echo '$?' | sed -e 's/ /,/g'` \
+	          text                           \
+	          `pwd`/phpmd.xml                \
 	          --suffixes=php
 
 # phpcs allows multiple directories.

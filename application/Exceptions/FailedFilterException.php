@@ -45,6 +45,19 @@ namespace miniworx\Application\Exceptions;
  */
 class FailedFilterException extends Exception
 {
+    /**
+     * Constructor method.
+     *
+     * @param string $title  The error title.
+     * @param string $detail The error detail.
+     */
+    public function __construct(string $title  = 'Failed Filter',
+                                string $detail = 'Failed Filter')
+    {
+        parent::__construct(400,
+                            $title,
+                            $detail);
+    }
 }
 
 /* FailedFilterException.php ends here. */

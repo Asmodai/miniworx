@@ -10,7 +10,7 @@
  * @copyright 2018 Paul Ward <asmodai@gmail.com>
  *
  * @license https://opensource.org/licenses/MIT The MIT License
- * @link https://www.github.com/...
+ * @link https://github.com/vivi90/miniworx
  */
 /*
  * Permission is hereby granted, free of charge, to any person
@@ -43,7 +43,7 @@ use \miniworx\Application\Exceptions;
 /**
  * Dispatch manager.
  *
- * @package Vendor/Project
+ * @package MiniworX
  */
 class Manager
 {
@@ -70,7 +70,7 @@ class Manager
     private function start()
     {
         foreach (get_declared_classes() as $class) {
-            if (in_array('miniworx\Application\Route\RoutableInterface',
+            if (in_array('miniworx\Application\Interfaces\RouteInterface',
                          class_implements($class))
             ) {
                 $inst              = new $class();
@@ -104,7 +104,14 @@ class Manager
             return $phpMethod;
         }
 
-        return false;
+        $exception = (new Exceptions\NotImplementedException())
+            ->setSourcePath($request->uri())
+            ->setSourceMethod($phpMethod)
+            ->setDetail(
+                'The method \'' . $request->method() . '\' is not implemented.'
+            );
+
+        throw $exception;
     }
 
     /**
@@ -118,8 +125,15 @@ class Manager
     {
         $out = $output;
 
+        if (is_object($output) && method_exists($output, 'jsonSerialize')) {
+            $request->log("jsonSerializable object.");
+            $out = json_encode($output);
+            goto write;
+        }
+
         if (!\miniworx\Application\Utils\Types::isString($output)) {
             if (is_object($output)) {
+                $request->log("non-serializable object.");
                 $out = json_encode(get_object_vars($output));
                 goto write;
             }
@@ -143,6 +157,79 @@ class Manager
     }
 
     /**
+     * Find the request's route in the route tree.
+     *
+     * @param \miniworx\Application\Request\Request $request The request
+     * @return Route
+     */
+    private function findRoute(&$request)
+    {
+        $segments = $request->uriSegments();
+        $route    = $this->tree->search($segments);
+
+        if ($route === false) {
+            $exception = (new Exceptions\NotFoundException())
+                ->setSourcePath($request->uri())
+                ->setDetail('Could not find ' . $request->uri());
+
+            throw $exception;
+        }
+
+        return $route;
+    }
+
+    /**
+     * Handle RouteException-derived exceptions.
+     *
+     * @param \miniworx\Application\Request\Request $request   The request.
+     * @param Exceptions\RouteException             $exception The exception.
+     * @return bool
+     */
+    private function handleRouteException(&$request, $exception)
+    {
+        $errs = array();
+        $out  = array();
+        $code = 0;
+
+        foreach ($exception->exceptions() as $ex) {
+            $ex->setSourcePath($exception->path());
+            
+            if ($code === 0) {
+                $code = $ex->getStatus();
+            }
+            
+            $errs[] = $ex->getJson();
+        }
+
+        if ($code === 0) {
+            $code = 500;
+        }
+        
+        $out['errors'][] = $errs;
+
+        $request->setStatus($code);
+        return $this->emit($out, $request);
+    }
+
+    /**
+     * Handle Exception-derived exceptions.
+     *
+     * @param \miniworx\Application\Request\Request $request   The request.
+     * @param Exceptions\Exception                  $exception The exception.
+     * @return bool
+     */
+    private function handleException(&$request, $exception)
+    {
+        $out  = array();
+        $code = $exception->getStatus();
+
+        $out['errors'][] = $exception->getJson();
+
+        $request->setStatus($code);
+        return $this->emit($out, $request);
+    }
+
+    /**
      * Resolve a request.
      *
      * @param \miniworx\Application\Request\Request $request The request
@@ -151,24 +238,11 @@ class Manager
     public function resolve(&$request)
     {
         try {
+            $route    = $this->findRoute($request);
             $segments = $request->uriSegments();
-            $route    = $this->tree->search($segments);
-
-            if ($route === false) {
-                $request->setStatus(404);
-                $msg = "404";
-                return $this->emit($msg, $request);
-            }
-
             $bindings = $route->bindings($segments);
             $method   = $this->getMethod($request, $route->instance());
             $request->setBindings($bindings);
-
-            if (!$method) {
-                $request->setStatus(404);
-                $msg = "404";
-                return $this->emit($msg, $request);
-            }
 
             $out = $route->instance()->$method($request);
 
@@ -178,22 +252,9 @@ class Manager
 
             return $this->emit($out, $request);
         } catch (Exceptions\RouteException $e) {
-            $errs = array();
-            $out  = array();
-
-            $out['path'] = $e->path();
-
-            foreach ($e->exceptions() as $ex) {
-                $errs[] = [
-                    'message' => $ex->getMessage(),
-                    'values'  => $ex->getJson()
-                ];
-            }
-
-            $out['errors'] = $errs;
-
-            $request->setStatus(500);
-            return $this->emit($out, $request);
+            return $this->handleRouteException($request, $e);
+        } catch (Exceptions\Exception $e) {
+            return $this->handleException($request, $e);
         }
     }
 }

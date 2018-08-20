@@ -79,12 +79,12 @@ class Bootstrap
             );
         }
 
-        $this->application = null;
-
         $this->detectMode();
         $this->configure();
         $this->loadVendor();
         $this->preflight();
+        
+        $this->application = new Application($this);
     }
 
     /**
@@ -197,8 +197,6 @@ class Bootstrap
      */
     public function run()
     {
-        $this->application = new Application($this);
-
         $this->application->run();
     }
     
